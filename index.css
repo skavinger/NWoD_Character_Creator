@@ -1,0 +1,90 @@
+  	ul#tabnav { 
+			text-align: left; 
+			margin: 1em 0 1em 0; 
+			font: bold 11px verdana, arial, sans-serif; 
+			border-bottom: 1px solid #6c6; 
+			list-style-type: none;
+			padding: 3px 10px 3px 10px; 
+		}
+		ul#tabnav li { 
+			display: inline;
+		}
+
+		ul#tabnav li a { 
+			padding: 3px 4px; 
+			border: 1px solid #6c6; 
+			background-color: #77b5fe; 
+			color: #000000; 
+			margin-right: 0px; 
+			text-decoration: none;
+			border-bottom: none;
+		}
+		ul#tabnav a:hover { 
+			background: #fff; 
+		}
+		td.AtributeContainer{
+			padding: 5px;
+		}
+		td.AtributeHeader{
+			padding-top: 10px;
+		}
+		table.SkillTable{
+			width: 100%;
+		}
+		td.Collum1{
+			padding-bottom: 10px;
+		}
+		td.Collum2{
+			padding-bottom: 10px;
+		}
+		td.Collum3{
+			padding-bottom: 10px;
+		}
+		table.MeritContainer{
+			width: 100%;
+			height: 100%;
+		}
+		select.MeritCol1{
+			width: 100%;
+			height: 100%;
+		}
+		select.MeritCol2{
+			width: 100%;
+			height: 100%;
+		}
+		textarea.MeritCol3{
+			width: 100%;
+			height: 100%;
+		}
+		table.OtherHolder{
+			height: 100%;
+			width: 100%;
+		}
+		td.Vice{
+			vertical-align: top;
+		}
+		td.Virtue{
+			vertical-align: top;
+		}
+		div.circle{
+			border: 2px solid black;
+			width: 20px;
+			height: 20px;
+			border-radius: 50%;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+			float: left;
+		}
+		div.filled{
+			background: black;
+			color: white;
+		}
+		div.circleVert{
+			border: 2px solid black;
+			width: 30px;
+			height: 30px;
+			border-radius: 50%;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+			text-align: center;
+		}
