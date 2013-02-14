@@ -1,7 +1,14 @@
 var meritsDesciptionFlag = -1;
 var meritsDesciptionFlagOwned = -1;
+var selectedSpecialty;
+var selectedSave;
+var saveList = new Array();
+if(localStorage.getItem("saveList") === null){
+	localStorage.setItem("saveList",",");	
+}
+saveList = localStorage.getItem("saveList").split(",");;
 var player = {
-  "strength" : 1,
+	"strength" : 1,
 	"dexterity" : 1,
 	"stamina" : 1,
 	
@@ -43,7 +50,8 @@ var player = {
 	"meritsList" : [],
 	"vice" : '',
 	"virtue" : '',
-	"morality" : 7
+	"morality" : 7,
+	"specialty" : []
 }
 function loadAtributesTab(){
 	var atributesPage = genAtrTab();
@@ -62,14 +70,42 @@ function loadOtherTab () {
 	document.getElementById("container").innerHTML = otherPage;
 }
 function loadSaveTab () {
-  	var savePage = "<input type='button' value='Save' onclick='savePlayer()' /><input type='button' value='Load' onclick='loadPlayer()' />";
+  	var savePage = genSaveTab();
   	document.getElementById("container").innerHTML = savePage;
 }
 function savePlayer () {
-  	localStorage.setItem("player",JSON.stringify(player));
+	var saveFlag = 0;
+	var saveName = document.getElementById("saveInput").value;
+	for(i = 0; i < saveList.length;i++){
+		if(saveList[i] === saveName){
+			saveFlag = 1;
+		}
+	}
+	if(saveFlag === 0){
+		saveList.push(saveName);
+	}
+  	localStorage.setItem(saveName,JSON.stringify(player));
+  	localStorage.setItem("saveList",saveList.join(","));
+  	loadSaveTab();
+}
+function genSaveTab () {
+  	var page = "<div>Name:<input id='saveInput' type='text'/><input type='button' value='Save' onclick='savePlayer()' /></div><select size='10'>"
+	for(i = 2; i < saveList.length; i++){
+		page += "<option onclick='setSelectedSave(" + i + ")'>" + saveList[i] + "</option>"
+	}
+  	page += "</select><div><input type='button' value='Load' onclick='loadPlayer()' /><input type='button' value='Delete' onclick='deletePlayer()' /><div>";
+  	return page;
+}
+function setSelectedSave (index) {
+  	selectedSave = index;
 }
 function loadPlayer (){
-	player = JSON.parse(localStorage.getItem("player"));
+	player = JSON.parse(localStorage.getItem(saveList[selectedSave]));
+}
+function deletePlayer () {
+  saveList.splice(selectedSave,1);
+  localStorage.setItem("saveList",saveList.join(","));
+  loadSaveTab();
 }
 function genAtrTab () {
 	var page = "<table> <tr> <td class='AtributeHeader'>--Mental--</td> </tr> <tr> <td class='AtributeContainer'>Intelligence</td> <td>";
@@ -413,8 +449,11 @@ function genSkillsTab () {
 		}
 	}
  
-	page += "</td> </tr> </table>";
-	
+	page += "</td> </tr> </table><div class='specialtyList'>New Specialty:<input id='specialtyInput' class='specialtyInput' type='text' /><input type='button' onclick='addSpecialty()' value='Add'/><input type='button' onclick='removeSpecialty()' value='Remove'/></div><select class='specialtyText' size='10'>"
+	for(i = 0; i < player.specialty.length;i++){
+		page += "<option onclick='selectSpecialty(" + i + ")'>" + player.specialty[i] + "</option>";
+	}
+	page += "</select>";
 	return page;
 }
 function genMeritsTab () {
@@ -544,6 +583,18 @@ function genOtherTab () {
 		page +=  "<option onclick='player.vice = \"Wrath\";'>Wrath</option>";
 	}
 	return page;
+}
+function selectSpecialty (index) {
+  	selectedSpecialty = index;
+}
+function addSpecialty () {
+  var input = document.getElementById("specialtyInput").value;
+  player.specialty.push(input);
+  loadSkillsTab();
+}
+function removeSpecialty () {
+  	player.specialty.splice(selectedSpecialty,1);
+  	loadSkillsTab();
 }
 function selectMorality(morality){
 	player.morality = morality;
