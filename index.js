@@ -56,7 +56,52 @@ var player = {
 	"normalXP" : 0,
 	"otherXP" : 0,
 	"spentNormalXP" : 0,
-	"spentOtherXP" : 0
+	"spentOtherXP" : 0,
+	"splatType": "mortal",
+	"templateValue": 1
+}
+function loadSuperNatural () {
+	var superNaturalPage = "";
+	if(player.splatType === "mortal"){
+  		superNaturalPage = "No Templet or Hunter Templet Applied";
+  	}
+  	else if(player.splatType === "vampire"){
+  		superNaturalPage = loadVampire();
+  	}
+  	else if(player.splatType === "werewolf"){
+  		superNaturalPage = loadWerewolf();
+  	}
+  	else if(player.splatType === "mage"){
+  		superNaturalPage = loadmage();
+  	}
+  	else if(player.splatType === "changeling"){
+  		superNaturalPage = loadChangeling();
+  	}
+  	else if(player.splatType === "geist"){
+  		superNaturalPage = loadGeist();
+  	}
+  	else if(player.splatType === "promethean"){
+  		superNaturalPage = loadPromethean();
+  	}
+  	document.getElementById("container").innerHTML = superNaturalPage;
+}
+function loadVampire () {
+	//TODO
+}
+function loadWerewolf () {
+	//TODO
+}
+function loadMage () {
+	//TODO
+}
+function loadChangeling () {
+	//TODO
+}
+function loadGeist () {
+	//TODO
+}
+function loadPromethean () {
+	//TODO
 }
 function loadAtributesTab(){
 	var atributesPage = genAtrTab();
