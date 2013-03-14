@@ -4,6 +4,12 @@ var xpFlag = 0;
 var selectedSpecialty;
 var selectedSave;
 var saveList = new Array();
+var powerDesciptionFlagOwned = -1;
+var powerDesciptionFlag = -1;
+var disciplineDesciptionFlagOwned = -1;
+var disciplineDesciptionFlag = -1;
+var devotionDesciptionFlagOwned = -1;
+var devotionDesciptionFlag = -1;
 if(localStorage.getItem("saveList") === null){
 	localStorage.setItem("saveList",",");	
 }
@@ -58,11 +64,16 @@ var player = {
 	"spentNormalXP" : 0,
 	"spentOtherXP" : 0,
 	"splatType": "mortal",
-	"templateValue": 1
+	"templateValue": 1,
+	"clan":"",
+	"bloodline": "",
+	"covenant": "",
+	"disciplineList": [],
+	"devotionList": []
 }
 function loadSuperNatural () {
 	var superNaturalPage = "";
-	if(player.splatType === "mortal"){
+	if(player.splatType === "mortal" || player.splatType === "hunter"){
   		superNaturalPage = "No Templet or Hunter Templet Applied";
   	}
   	else if(player.splatType === "vampire"){
@@ -86,7 +97,202 @@ function loadSuperNatural () {
   	document.getElementById("container").innerHTML = superNaturalPage;
 }
 function loadVampire () {
-	//TODO
+	var page = "<table><tr>Blood Potency:";
+	for(i = 0;i < 10;i++){
+		if(i < player.templateValue){
+			page += "<div class='circle filled' onclick='setTemplateValue(" + (i + 1) + ")'></div>";
+		}
+		else{
+			page += "<div class='circle' onclick='setTemplateValue(" + (i + 1) + ")'></div>";
+		}
+	}
+	page += "</tr><tr><td><div>Clan:</div><select size='6'>";
+	if(player.clan === "Daeva"){
+		page += "<option onclick='player.clan = \"Daeva\";loadSuperNatural();' selected='true'>Daeva</option><option onclick='player.clan = \"Gangrel\";loadSuperNatural();'>Gangrel</option><option onclick='player.clan = \"Mekhet\";loadSuperNatural();'>Mekhet</option><option onclick='player.clan = \"Nosferatu\";loadSuperNatural();'>Nosferatu</option><option onclick='player.clan = \"Ventrue\";loadSuperNatural();'>Ventrue</option>";
+	}
+	else if(player.clan === "Gangrel"){
+		page += "<option onclick='player.clan = \"Daeva\";loadSuperNatural();'>Daeva</option><option onclick='player.clan = \"Gangrel\";loadSuperNatural();' selected='true'>Gangrel</option><option onclick='player.clan = \"Mekhet\";loadSuperNatural();'>Mekhet</option><option onclick='player.clan = \"Nosferatu\";loadSuperNatural();'>Nosferatu</option><option onclick='player.clan = \"Ventrue\";loadSuperNatural();'>Ventrue</option>";
+	}
+	else if(player.clan === "Mekhet"){
+		page += "<option onclick='player.clan = \"Daeva\";loadSuperNatural();'>Daeva</option><option onclick='player.clan = \"Gangrel\";loadSuperNatural();'>Gangrel</option><option onclick='player.clan = \"Mekhet\";loadSuperNatural();' selected='true'>Mekhet</option><option onclick='player.clan = \"Nosferatu\";loadSuperNatural();'>Nosferatu</option><option onclick='player.clan = \"Ventrue\";loadSuperNatural();'>Ventrue</option>";
+	}
+	else if(player.clan === "Nosferatu"){
+		page += "<option onclick='player.clan = \"Daeva\";loadSuperNatural();'>Daeva</option><option onclick='player.clan = \"Gangrel\";loadSuperNatural();'>Gangrel</option><option onclick='player.clan = \"Mekhet\";loadSuperNatural();'>Mekhet</option><option onclick='player.clan = \"Nosferatu\";loadSuperNatural();' selected='true'>Nosferatu</option><option onclick='player.clan = \"Ventrue\";loadSuperNatural();'>Ventrue</option>";
+	}
+	else if(player.clan === "Ventrue"){
+		page += "<option onclick='player.clan = \"Daeva\";loadSuperNatural();'>Daeva</option><option onclick='player.clan = \"Gangrel\";loadSuperNatural();'>Gangrel</option><option onclick='player.clan = \"Mekhet\";loadSuperNatural();'>Mekhet</option><option onclick='player.clan = \"Nosferatu\";loadSuperNatural();'>Nosferatu</option><option onclick='player.clan = \"Ventrue\";loadSuperNatural();' selected='true'>Ventrue</option>";
+	}
+	else{
+		page += "<option onclick='player.clan = \"Daeva\";loadSuperNatural();'>Daeva</option><option onclick='player.clan = \"Gangrel\";loadSuperNatural();'>Gangrel</option><option onclick='player.clan = \"Mekhet\";loadSuperNatural();'>Mekhet</option><option onclick='player.clan = \"Nosferatu\";loadSuperNatural();'>Nosferatu</option><option onclick='player.clan = \"Ventrue\";loadSuperNatural();'>Ventrue</option>";
+	}
+	page += "</select></td><td><div>Bloodline</div><select size='6'>";
+	if(player.clan === "Daeva"){
+		if(player.bloodline === "Duchagne"){
+			page += "<option onclick='player.bloodline = \"Duchagne\"' selected='true'>Duchagne</option><option onclick='player.bloodline = \"Toreador\"'>Toreador</option><option onclick='player.bloodline = \"Xiao\"'>Xiao</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else if(player.bloodline === "Toreador"){
+			page += "<option onclick='player.bloodline = \"Duchagne\"'>Duchagne</option><option onclick='player.bloodline = \"Toreador\"' selected='true'>Toreador</option><option onclick='player.bloodline = \"Xiao\"'>Xiao</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else if(player.bloodline === "Xiao"){
+			page += "<option onclick='player.bloodline = \"Duchagne\"'>Duchagne</option><option onclick='player.bloodline = \"Toreador\"'>Toreador</option><option onclick='player.bloodline = \"Xiao\"' selected='true'>Xiao</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else{
+			page += "<option onclick='player.bloodline = \"Duchagne\"'>Duchagne</option><option onclick='player.bloodline = \"Toreador\"'>Toreador</option><option onclick='player.bloodline = \"Xiao\"'>Xiao</option><option onclick='player.bloodline = \"None\"' selected='true'>None</option>";
+		}
+	}
+	else if(player.clan === "Gangrel"){
+		if(player.bloodline === "Anavashar"){
+			page += "<option onclick='player.bloodline = \"Anavashar\"' selected='true'>Anavashar</option><option onclick='player.bloodline = \"Anubi\"'>Anubi</option><option onclick='player.bloodline = \"Bruja\"'>Bruja</option><option onclick='player.bloodline = \"Taifa\"'>Taifa</option><option onclick='player.bloodline = \"Matasuntha\"'>Matasuntha</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else if(player.bloodline === "Anubi"){
+			page += "<option onclick='player.bloodline = \"Anavashar\"'>Anavashar</option><option onclick='player.bloodline = \"Anubi\"' selected='true'>Anubi</option><option onclick='player.bloodline = \"Bruja\"'>Bruja</option><option onclick='player.bloodline = \"Taifa\"'>Taifa</option><option onclick='player.bloodline = \"Matasuntha\"'>Matasuntha</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else if(player.bloodline === "Bruja"){
+			page += "<option onclick='player.bloodline = \"Anavashar\"'>Anavashar</option><option onclick='player.bloodline = \"Anubi\"'>Anubi</option><option onclick='player.bloodline = \"Bruja\"' selected='true'>Bruja</option><option onclick='player.bloodline = \"Taifa\"'>Taifa</option><option onclick='player.bloodline = \"Matasuntha\"'>Matasuntha</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else if(player.bloodline === "Matasuntha"){
+			page += "<option onclick='player.bloodline = \"Anavashar\"'>Anavashar</option><option onclick='player.bloodline = \"Anubi\"'>Anubi</option><option onclick='player.bloodline = \"Bruja\"'>Bruja</option><option onclick='player.bloodline = \"Taifa\"' selected='true'>Taifa</option><option onclick='player.bloodline = \"Matasuntha\"'>Matasuntha</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else if(player.bloodline === "Taifa"){
+			page += "<option onclick='player.bloodline = \"Anavashar\"'>Anavashar</option><option onclick='player.bloodline = \"Anubi\"'>Anubi</option><option onclick='player.bloodline = \"Bruja\"'>Bruja</option><option onclick='player.bloodline = \"Taifa\"'>Taifa</option><option onclick='player.bloodline = \"Matasuntha\"' selected='true'>Matasuntha</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else{
+			page += "<option onclick='player.bloodline = \"Anavashar\"'>Anavashar</option><option onclick='player.bloodline = \"Anubi\"'>Anubi</option><option onclick='player.bloodline = \"Bruja\"'>Bruja</option><option onclick='player.bloodline = \"Taifa\"'>Taifa</option><option onclick='player.bloodline = \"Matasuntha\"'>Matasuntha</option><option onclick='player.bloodline = \"None\"' selected='true'>None</option>";
+		}
+	}
+	else if(player.clan === "Mekhet"){
+		if(player.bloodline === "Agonistes"){
+			page += "<option onclick='player.bloodline = \"Agonistes\"' selected='true'>Agonistes</option><option onclick='player.bloodline = \"Mnemosyne\"'>Mnemosyne</option><option onclick='player.bloodline = \"Morbus\"'>Morbus</option><option onclick='player.bloodline = \"Sangiovanni\"'>Sangiovanni</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else if(player.bloodline === "Mnemosyne"){
+			page += "<option onclick='player.bloodline = \"Agonistes\"'>Agonistes</option><option onclick='player.bloodline = \"Mnemosyne\"' selected='true'>Mnemosyne</option><option onclick='player.bloodline = \"Morbus\"'>Morbus</option><option onclick='player.bloodline = \"Sangiovanni\"'>Sangiovanni</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else if(player.bloodline === "Morbus"){
+			page += "<option onclick='player.bloodline = \"Agonistes\"'>Agonistes</option><option onclick='player.bloodline = \"Mnemosyne\"'>Mnemosyne</option><option onclick='player.bloodline = \"Morbus\"' selected='true'>Morbus</option><option onclick='player.bloodline = \"Sangiovanni\"'>Sangiovanni</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else if(player.bloodline === "Sangiovanni"){
+			page += "<option onclick='player.bloodline = \"Agonistes\"'>Agonistes</option><option onclick='player.bloodline = \"Mnemosyne\"'>Mnemosyne</option><option onclick='player.bloodline = \"Morbus\"'>Morbus</option><option onclick='player.bloodline = \"Sangiovanni\"' selected='true'>Sangiovanni</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else{
+			page += "<option onclick='player.bloodline = \"Agonistes\"'>Agonistes</option><option onclick='player.bloodline = \"Mnemosyne\"'>Mnemosyne</option><option onclick='player.bloodline = \"Morbus\"'>Morbus</option><option onclick='player.bloodline = \"Sangiovanni\"'>Sangiovanni</option><option onclick='player.bloodline = \"None\"' selected='true'>None</option>";
+		}
+	}
+	else if(player.clan === "Nosferatu"){
+		if(player.bloodline === "Acteius"){
+			page += "<option onclick='player.bloodline = \"Acteius\"' selected='true'>Acteius</option><option onclick='player.bloodline = \"Baddacelli\"'>Baddacelli</option><option onclick='player.bloodline = \"Burakumin\"'>Burakumin</option><option onclick='player.bloodline = \"Noctuku\"'>Noctuku</option><option onclick='player.bloodline = \"Yagnatia\"'>Yagnatia</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else if(player.bloodline === "Baddacelli"){
+			page += "<option onclick='player.bloodline = \"Acteius\"'>Acteius</option><option onclick='player.bloodline = \"Baddacelli\"' selected='true'>Baddacelli</option><option onclick='player.bloodline = \"Burakumin\"'>Burakumin</option><option onclick='player.bloodline = \"Noctuku\"'>Noctuku</option><option onclick='player.bloodline = \"Yagnatia\"'>Yagnatia</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else if(player.bloodline === "Burakumin"){
+			page += "<option onclick='player.bloodline = \"Acteius\"'>Acteius</option><option onclick='player.bloodline = \"Baddacelli\"'>Baddacelli</option><option onclick='player.bloodline = \"Burakumin\"' selected='true'>Burakumin</option><option onclick='player.bloodline = \"Noctuku\"'>Noctuku</option><option onclick='player.bloodline = \"Yagnatia\"'>Yagnatia</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else if(player.bloodline === "Noctuku"){
+			page += "<option onclick='player.bloodline = \"Acteius\"'>Acteius</option><option onclick='player.bloodline = \"Baddacelli\"'>Baddacelli</option><option onclick='player.bloodline = \"Burakumin\"'>Burakumin</option><option onclick='player.bloodline = \"Noctuku\"' selected='true'>Noctuku</option><option onclick='player.bloodline = \"Yagnatia\"'>Yagnatia</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else if(player.bloodline === "Yagnatia"){
+			page += "<option onclick='player.bloodline = \"Acteius\"'>Acteius</option><option onclick='player.bloodline = \"Baddacelli\"'>Baddacelli</option><option onclick='player.bloodline = \"Burakumin\"'>Burakumin</option><option onclick='player.bloodline = \"Noctuku\"'>Noctuku</option><option onclick='player.bloodline = \"Yagnatia\"' selected='true'>Yagnatia</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else{
+			page += "<option onclick='player.bloodline = \"Acteius\"'>Acteius</option><option onclick='player.bloodline = \"Baddacelli\"'>Baddacelli</option><option onclick='player.bloodline = \"Burakumin\"'>Burakumin</option><option onclick='player.bloodline = \"Noctuku\"'>Noctuku</option><option onclick='player.bloodline = \"Yagnatia\"'>Yagnatia</option><option onclick='player.bloodline = \"None\"' selected='true'>None</option>";
+		}
+	}
+	else if(player.clan === "Ventrue"){
+		if(player.bloodline === "Beni Murrahim"){
+			page += "<option onclick='player.bloodline = \"Beni Murrahim\"' selected='true'>Beni Murrahim</option><option onclick='player.bloodline = \"Cassian\"'>Cassian</option><option onclick='player.bloodline = \"Licinii\"'>Licinii</option><option onclick='player.bloodline = \"Malkovian\"'>Malkovian</option><option onclick='player.bloodline = \"Rotgrafen\"'>Rotgrafen</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else if(player.bloodline === "Cassian"){
+			page += "<option onclick='player.bloodline = \"Beni Murrahim\"'>Beni Murrahim</option><option onclick='player.bloodline = \"Cassian\"' selected='true'>Cassian</option><option onclick='player.bloodline = \"Licinii\"'>Licinii</option><option onclick='player.bloodline = \"Malkovian\"'>Malkovian</option><option onclick='player.bloodline = \"Rotgrafen\"'>Rotgrafen</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else if(player.bloodline === "Licinii"){
+			page += "<option onclick='player.bloodline = \"Beni Murrahim\"'>Beni Murrahim</option><option onclick='player.bloodline = \"Cassian\"'>Cassian</option><option onclick='player.bloodline = \"Licinii\"' selected='true'>Licinii</option><option onclick='player.bloodline = \"Malkovian\"'>Malkovian</option><option onclick='player.bloodline = \"Rotgrafen\"'>Rotgrafen</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else if(player.bloodline === "Malkovian"){
+			page += "<option onclick='player.bloodline = \"Beni Murrahim\"'>Beni Murrahim</option><option onclick='player.bloodline = \"Cassian\"'>Cassian</option><option onclick='player.bloodline = \"Licinii\"'>Licinii</option><option onclick='player.bloodline = \"Malkovian\"' selected='true'>Malkovian</option><option onclick='player.bloodline = \"Rotgrafen\"'>Rotgrafen</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else if(player.bloodline === "Rotgrafen"){
+			page += "<option onclick='player.bloodline = \"Beni Murrahim\"'>Beni Murrahim</option><option onclick='player.bloodline = \"Cassian\"'>Cassian</option><option onclick='player.bloodline = \"Licinii\"'>Licinii</option><option onclick='player.bloodline = \"Malkovian\"'>Malkovian</option><option onclick='player.bloodline = \"Rotgrafen\"' selected='true'>Rotgrafen</option><option onclick='player.bloodline = \"None\"'>None</option>";
+		}
+		else{
+			page += "<option onclick='player.bloodline = \"Beni Murrahim\"'>Beni Murrahim</option><option onclick='player.bloodline = \"Cassian\"'>Cassian</option><option onclick='player.bloodline = \"Licinii\"'>Licinii</option><option onclick='player.bloodline = \"Malkovian\"'>Malkovian</option><option onclick='player.bloodline = \"Rotgrafen\"'>Rotgrafen</option><option onclick='player.bloodline = \"None\"' selected='true'>None</option>";
+		}
+	}
+	page += "</select></td><td><div>Covenant:</div><select size='6'>";
+	if (player.covenant === "Carthian"){
+		page += "<option onclick='player.covenant = \"Carthian\"' selected='true'>Carthian</option><option onclick='player.covenant = \"Circle of the Crone\"'>Circle of the Crone</option><option onclick='player.covenant = \"Invictus\"'>Invictus</option><option onclick='player.covenant = \"Lancea Sanctum\"'>Lancea Sanctum</option><option onclick='player.covenant = \"Ordo Dracul\"'>Ordo Dracul</option><option onclick='player.covenant = \"Unalined\"'>Unalined</option>";
+	}
+	else if (player.covenant === "Circle of the Crone"){
+		page += "<option onclick='player.covenant = \"Carthian\"'>Carthian</option><option onclick='player.covenant = \"Circle of the Crone\"' selected='true'>Circle of the Crone</option><option onclick='player.covenant = \"Invictus\"'>Invictus</option><option onclick='player.covenant = \"Lancea Sanctum\"'>Lancea Sanctum</option><option onclick='player.covenant = \"Ordo Dracul\"'>Ordo Dracul</option><option onclick='player.covenant = \"Unalined\"'>Unalined</option>";
+	}
+	else if (player.covenant === "Invictus"){
+		page += "<option onclick='player.covenant = \"Carthian\"'>Carthian</option><option onclick='player.covenant = \"Circle of the Crone\"'>Circle of the Crone</option><option onclick='player.covenant = \"Invictus\"' selected='true'>Invictus</option><option onclick='player.covenant = \"Lancea Sanctum\"'>Lancea Sanctum</option><option onclick='player.covenant = \"Ordo Dracul\"'>Ordo Dracul</option><option onclick='player.covenant = \"Unalined\"'>Unalined</option>";
+	}
+	else if (player.covenant === "Lancea Sanctum"){
+		page += "<option onclick='player.covenant = \"Carthian\"'>Carthian</option><option onclick='player.covenant = \"Circle of the Crone\"'>Circle of the Crone</option><option onclick='player.covenant = \"Invictus\"'>Invictus</option><option onclick='player.covenant = \"Lancea Sanctum\"' selected='true'>Lancea Sanctum</option><option onclick='player.covenant = \"Ordo Dracul\"'>Ordo Dracul</option><option onclick='player.covenant = \"Unalined\"'>Unalined</option>";
+	}
+	else if (player.covenant === "Ordo Dracul"){
+		page += "<option onclick='player.covenant = \"Carthian\"'>Carthian</option><option onclick='player.covenant = \"Circle of the Crone\"'>Circle of the Crone</option><option onclick='player.covenant = \"Invictus\"'>Invictus</option><option onclick='player.covenant = \"Lancea Sanctum\"'>Lancea Sanctum</option><option onclick='player.covenant = \"Ordo Dracul\"' selected='true'>Ordo Dracul</option><option onclick='player.covenant = \"Unalined\"'>Unalined</option>";
+	}
+	else{
+		page += "<option onclick='player.covenant = \"Carthian\"'>Carthian</option><option onclick='player.covenant = \"Circle of the Crone\"'>Circle of the Crone</option><option onclick='player.covenant = \"Invictus\"'>Invictus</option><option onclick='player.covenant = \"Lancea Sanctum\"'>Lancea Sanctum</option><option onclick='player.covenant = \"Ordo Dracul\"'>Ordo Dracul</option><option onclick='player.covenant = \"Unalined\"' selected='true'>Unalined</option>";
+	}
+	page += "</select></td></tr>";
+	page += "<tr><td><div>--Disciplines--</div><select class='MeritCol1' size='10'>";
+  	for(var i = 0; i < player.disciplineList.length;i++){
+  		if(disciplineDesciptionFlagOwned === i){
+  			page += "<option id='ownedDisciplineSelected' class='" + i + "' selected='true' onclick='displayDisciplineDescriptionOwned(" + i + ")'>" + player.disciplineList[i].name + "</option>";
+  		}
+  		else{
+  			page += "<option onclick='displayDisciplineDescriptionOwned(" + i + ")'>" + player.disciplineList[i].name + "</option>";
+  		}
+  	}
+  	page += "</select><input value='Remove Discipline' type='button' onclick='removeDiscipline()' /> </td><td><div>--Description--</div><textarea class='MeritCol3' readonly='readonly' rows='10'>";
+  	if(disciplineDesciptionFlagOwned >= 0){
+		page += player.disciplineList[disciplineDesciptionFlagOwned].name + "\nRating:" + player.disciplineList[disciplineDesciptionFlagOwned].rating + "\nBook:"+ player.disciplineList[disciplineDesciptionFlagOwned].book + "\nPrerequisits:" + player.disciplineList[disciplineDesciptionFlagOwned].prerequisite;
+	}
+  	page += "</textarea></td><td><div>--Devotions--</div><select class='MeritCol1' size='10'>";
+  	for(var i = 0; i < player.devotionList.length;i++){
+  		if(devotionDesciptionFlagOwned === i){
+  			page += "<option id='ownedDevotionSelected' class='" + i + "' selected='true' onclick='displayDevotionDescriptionOwned(" + i + ")'>" + player.devotionList[i].name + "</option>";
+  		}
+  		else{
+  			page += "<option onclick='displayDevotionDescriptionOwned(" + i + ")'>" + player.devotionList[i].name + "</option>";
+  		}
+  	}
+  	page += "</select><input value='Remove Devotion' type='button' onclick='removeDevotion()' /> </td><td><div>--Description--</div><textarea class='MeritCol3' readonly='readonly' rows='10'>";
+  	if(devotionDesciptionFlagOwned >= 0){
+		page += player.devotionList[devotionDesciptionFlagOwned].name + "\nRating:" + player.devotionList[devotionDesciptionFlagOwned].rating + "\nBook:"+ player.devotionList[devotionDesciptionFlagOwned].book + "\nPrerequisits:" + player.devotionList[devotionDesciptionFlagOwned].prerequisite;
+	}
+  	page += "</textarea></td></tr>";
+  	page += "<tr><td><div>--All Disciplines--</div><select class='MeritCol2' size='10'>";
+  	for(var i = 0; i < disciplines.length;i++){
+  		if (disciplineDesciptionFlag === i) {
+  			page += "<option id='disciplineSelected' class='" + i + "' selected='true' onclick='displayDisciplineDescription(" + i + ")'>" + disciplines[i].name + "</option>";
+  		}
+  		else{
+  			page += "<option onclick='displayDisciplineDescription(" + i + ")'>" + disciplines[i].name + "</option>";
+  		}
+  	}
+	page += "</select> <input value='Add Selected Disciplines' type='button' onclick='gainDiscipline()' /> </td> <td><div> --Description-- </div><textarea class='MeritCol3' readonly='readonly' rows='10'>"
+	if(disciplineDesciptionFlag >= 0){
+		page += disciplines[disciplineDesciptionFlag].name + "\nRating:" + disciplines[disciplineDesciptionFlag].rating + "\nBook:"+ disciplines[disciplineDesciptionFlag].book + "\nPrerequisits:" + disciplines[disciplineDesciptionFlag].prerequisite;
+	}
+	page += "</textarea></td><td><div>--All Devotions--</div><select class='MeritCol2' size='10'>";
+  	for(var i = 0; i < devotions.length;i++){
+  		if (devotionDesciptionFlag === i) {
+  			page += "<option id='devotionSelected' class='" + i + "' selected='true' onclick='displayDevotionDescription(" + i + ")'>" + devotions[i].name + "</option>";
+  		}
+  		else{
+  			page += "<option onclick='displayDevotionDescription(" + i + ")'>" + devotions[i].name + "</option>";
+  		}
+  	}
+	page += "</select> <input value='Add Selected Devotion' type='button' onclick='gainDevotion()' /> </td> <td><div> --Description-- </div><textarea class='MeritCol3' readonly='readonly' rows='10'>"
+	if(devotionDesciptionFlag >= 0){
+		page += devotions[devotionDesciptionFlag].name + "\nRating:" + devotions[devotionDesciptionFlag].rating + "\nBook:"+ devotions[devotionDesciptionFlag].book + "\nPrerequisits:" + devotions[devotionDesciptionFlag].prerequisite;
+	}
+	page += "</textarea></td></tr>";
+	page += "</table>";
+	return page;
 }
 function loadWerewolf () {
 	//TODO
@@ -550,11 +756,11 @@ function genMeritsTab () {
 	if(meritsDesciptionFlag >= 0){
 		page += merits[meritsDesciptionFlag].name + "\nRating:" + merits[meritsDesciptionFlag].rating + "\nBook:"+merits[meritsDesciptionFlag].book + "\nPrerequisits:" + merits[meritsDesciptionFlag].prerequisite;
 	}
-	page += "</textarea> </td> </tr> </table>";
+	page += "</textarea></td></tr></table>";
 	return page;
 }
 function genOtherTab () {
-	var page = "<table class='OtherHolder'> <tr> <td><div>--Morality--</div>";
+	var page = "<table class='OtherHolder'><tr><td>Supernatural Template<select class='Template'><option onclick='player.splatType = \"mortal\";'>Mortal</option><option onclick='player.splatType = \"vampire\";'>Vampire</option><option onclick='player.splatType = \"hunter\";'>Hunter</option></select></td></tr><tr><td><div>--Morality--</div>";
 	for(i = 0;i < 10;i++){
 		if(player.morality === (10 - i)){
 			page += "<div class='circleVert filled' onclick='selectMorality(" + (10 - i) + ")'>" + (10 - i) + "</div>";
@@ -698,6 +904,30 @@ function displayMeritDescriptionOwned (meritIndex){
 	meritsDesciptionFlagOwned = meritIndex;
 	loadMeritsTab();
 }
+function displayPowerDescription (powerIndex){
+	powerDesciptionFlag = powerIndex;
+	loadSuperNatural();
+}
+function displayPowerDescriptionOwned (powerIndex){
+	powerDesciptionFlagOwned = powerIndex;
+	loadSuperNatural();
+}
+function displayDisciplineDescription (powerIndex){
+	disciplineDesciptionFlag = powerIndex;
+	loadSuperNatural();
+}
+function displayDisciplineDescriptionOwned (powerIndex){
+	disciplineDesciptionFlagOwned = powerIndex;
+	loadSuperNatural();
+}
+function displayDevotionDescription (powerIndex){
+	devotionDesciptionFlag = powerIndex;
+	loadSuperNatural();
+}
+function displayDevotionDescriptionOwned (powerIndex){
+	devotionDesciptionFlagOwned = powerIndex;
+	loadSuperNatural();
+}
 function gainMerit () {
   	var selected = document.getElementById("allSelected");
   	var index = parseInt(selected.className);
@@ -713,6 +943,28 @@ function gainMerit () {
 	}
   	player.meritsList.push(merits[index]);
   	loadMeritsTab();
+}
+function gainDiscipline () {
+  	var selected = document.getElementById("disciplineSelected");
+  	var index = parseInt(selected.className);
+  	if(xpFlag === 1){
+		for(i = 1;i <= disciplines[index].rating; i++){
+			player.spentNormalXP += (i * 5);
+		}
+	}
+	else if(xpFlag === 2){
+		for(i = 1;i <= disciplines[index].rating; i++){
+			player.spentOtherXP += (i * 5);
+		}
+	}
+  	player.disciplineList.push(disciplines[index]);
+  	loadSuperNatural();
+}
+function gainDevotion () {
+  	var selected = document.getElementById("devotionSelected");
+  	var index = parseInt(selected.className);
+  	player.devotionList.push(devotions[index]);
+  	loadSuperNatural();
 }
 function removeMerit () {
 	var selected = document.getElementById("ownedSelected");
@@ -730,6 +982,30 @@ function removeMerit () {
 	player.meritsList.splice(index,1);
 	meritsDesciptionFlagOwned = -1;
 	loadMeritsTab();
+}
+function removeDiscipline () {
+	var selected = document.getElementById("ownedDisciplineSelected");
+	var index = parseInt(selected.className);
+	if(xpFlag === 1){
+		for(i = 1;i <= disciplines[index].rating; i++){
+			player.spentNormalXP += (i * -5);
+		}
+	}
+	else if(xpFlag === 2){
+		for(i = 1;i <= disciplines[index].rating; i++){
+			player.spentOtherXP += (i * -5);
+		}
+	}
+	player.disciplineList.splice(index,1);
+	disciplineDesciptionFlagOwned = -1;
+	loadSuperNatural();
+}
+function removeDevotion () {
+	var selected = document.getElementById("ownedDevotionSelected");
+	var index = parseInt(selected.className);
+	player.devotionList.splice(index,1);
+	devotionDesciptionFlagOwned = -1;
+	loadSuperNatural();
 }
 function spendAtrXP (oldRating,newRating) {
   	if(newRating > oldRating){
@@ -753,6 +1029,32 @@ function spendAtrXP (oldRating,newRating) {
 	  	else if(xpFlag === 2){
 	  		for(i = newRating;i < oldRating; i++){
 	  			player.spentOtherXP += ((i + 1) * -5);
+	  		}
+	  	}
+  	}
+}
+function spendTemplateXP (oldRating,newRating) {
+  	if(newRating > oldRating){
+	  	if(xpFlag === 1){
+	  		for(i = oldRating;i < newRating; i++){
+	  			player.spentNormalXP += ((i + 1) * 8);
+	  		}
+	  	}
+	  	else if(xpFlag === 2){
+	  		for(i = oldRating;i < newRating; i++){
+	  			player.spentOtherXP += ((i + 1) * 8);
+	  		}
+	  	}
+  	}
+  	else if(newRating < oldRating){
+  		if(xpFlag === 1){
+	  		for(i = newRating;i < oldRating; i++){
+	  			player.spentNormalXP += ((i + 1) * -8);
+	  		}
+	  	}
+	  	else if(xpFlag === 2){
+	  		for(i = newRating;i < oldRating; i++){
+	  			player.spentOtherXP += ((i + 1) * -8);
 	  		}
 	  	}
   	}
@@ -782,6 +1084,11 @@ function spendSkillXP (oldRating,newRating) {
 	  		}
 	  	}
   	}
+}
+function setTemplateValue (value) {
+	spendTemplateXP(player.templateValue,value);
+  	player.templateValue = value;
+  	loadSuperNatural();
 }
 function setStrength (value) {
 	spendAtrXP(player.strength,value);
@@ -6550,4 +6857,2412 @@ var merits = [
         "book": "Hunter: The Vigil Core, p. 74 "
       }
     ];
-
+var disciplines = [
+	    {
+		"name": "Celerity•",
+		"rating": "1",
+		"book": "Vampire: The Requiem Core Rulebook, p. 123-124"
+		},
+		{
+		"name": "Celerity••",
+		"rating": "2",
+		"book": "Vampire: The Requiem Core Rulebook, p. 123-124"
+		},
+		{
+		"name": "Celerity•••",
+		"rating": "3",
+		"book": "Vampire: The Requiem Core Rulebook, p. 123-124"
+		},
+		{
+		"name": "Celerity••••",
+		"rating": "4",
+		"book": "Vampire: The Requiem Core Rulebook, p. 123-124"
+		},
+		{
+		"name": "Celerity•••••",
+		"rating": "5",
+		"book": "Vampire: The Requiem Core Rulebook, p. 123-124"
+		},
+		{
+		"name": "Resilience•",
+		"rating": "1",
+		"book": "Vampire: The Requiem Rulebook, p 140"
+		},
+		{
+		"name": "Resilience••",
+		"rating": "2",
+		"book": "Vampire: The Requiem Rulebook, p 140"
+		},
+		{
+		"name": "Resilience•••",
+		"rating": "3",
+		"book": "Vampire: The Requiem Rulebook, p 140"
+		},
+		{
+		"name": "Resilience••••",
+		"rating": "4",
+		"book": "Vampire: The Requiem Rulebook, p 140"
+		},
+		{
+		"name": "Resilience•••••",
+		"rating": "5",
+		"book": "Vampire: The Requiem Rulebook, p 140"
+		},
+		{
+		"name": "Vigor•",
+		"rating": "1",
+		"book": "Vampire: The Requiem Core Rulebook, p. 141"
+		},
+		{
+		"name": "Vigor••",
+		"rating": "2",
+		"book": "Vampire: The Requiem Core Rulebook, p. 141"
+		},
+		{
+		"name": "Vigor•••",
+		"rating": "3",
+		"book": "Vampire: The Requiem Core Rulebook, p. 141"
+		},
+		{
+		"name": "Vigor••••",
+		"rating": "4",
+		"book": "Vampire: The Requiem Core Rulebook, p. 141"
+		},
+		{
+		"name": "Vigor•••••",
+		"rating": "5",
+		"book": "Vampire: The Requiem Core Rulebook, p. 141"
+		},
+		{
+		"name": "Animalism•",
+		"rating": "1",
+		"book": "Vampire: The Requiem Rulebook, p 115"
+		},
+		{
+		"name": "Animalism••",
+		"rating": "2",
+		"book": "Vampire: The Requiem Rulebook, p 115"
+		},
+		{
+		"name": "Animalism•••",
+		"rating": "3",
+		"book": "Vampire: The Requiem Rulebook, p 115"
+		},
+		{
+		"name": "Animalism••••",
+		"rating": "4",
+		"book": "Vampire: The Requiem Rulebook, p 115"
+		},
+		{
+		"name": "Animalism•••••",
+		"rating": "5",
+		"book": "Vampire: The Requiem Rulebook, p 115"
+		},
+		{
+		"name": "Obfuscate•",
+		"rating": "1",
+		"book": "Vampire: The Requiem Rulebook, p 124"
+		},
+		{
+		"name": "Obfuscate••",
+		"rating": "2",
+		"book": "Vampire: The Requiem Rulebook, p 124"
+		},
+		{
+		"name": "Obfuscate•••",
+		"rating": "3",
+		"book": "Vampire: The Requiem Rulebook, p 124"
+		},
+		{
+		"name": "Obfuscate••••",
+		"rating": "4",
+		"book": "Vampire: The Requiem Rulebook, p 124"
+		},
+		{
+		"name": "Obfuscate•••••",
+		"rating": "5",
+		"book": "Vampire: The Requiem Rulebook, p 124"
+		},
+		{
+		"name": "Auspex•",
+		"rating": "1",
+		"book": "Vampire: The Requiem Rulebook, p 119"
+		},
+		{
+		"name": "Auspex••",
+		"rating": "2",
+		"book": "Vampire: The Requiem Rulebook, p 119"
+		},
+		{
+		"name": "Auspex•••",
+		"rating": "3",
+		"book": "Vampire: The Requiem Rulebook, p 119"
+		},
+		{
+		"name": "Auspex••••",
+		"rating": "4",
+		"book": "Vampire: The Requiem Rulebook, p 119"
+		},
+		{
+		"name": "Auspex•••••",
+		"rating": "5",
+		"book": "Vampire: The Requiem Rulebook, p 119"
+		},
+		{
+		"name": "Dominate•",
+		"rating": "1",
+		"book": "Vampire: The Requiem Rulebook, p 124"
+		},
+		{
+		"name": "Dominate••",
+		"rating": "2",
+		"book": "Vampire: The Requiem Rulebook, p 124"
+		},
+		{
+		"name": "Dominate•••",
+		"rating": "3",
+		"book": "Vampire: The Requiem Rulebook, p 124"
+		},
+		{
+		"name": "Dominate••••",
+		"rating": "4",
+		"book": "Vampire: The Requiem Rulebook, p 124"
+		},
+		{
+		"name": "Dominate•••••",
+		"rating": "5",
+		"book": "Vampire: The Requiem Rulebook, p 124"
+		},
+		{
+		"name": "Majesty•",
+		"rating": "1",
+		"book": "Vampire: The Requiem Core Rulebook, p. 132-133"
+		},
+		{
+		"name": "Majesty••",
+		"rating": "2",
+		"book": "Vampire: The Requiem Core Rulebook, p. 132-133"
+		},
+		{
+		"name": "Majesty•••",
+		"rating": "3",
+		"book": "Vampire: The Requiem Core Rulebook, p. 132-133"
+		},
+		{
+		"name": "Majesty••••",
+		"rating": "4",
+		"book": "Vampire: The Requiem Core Rulebook, p. 132-133"
+		},
+		{
+		"name": "Majesty•••••",
+		"rating": "5",
+		"book": "Vampire: The Requiem Core Rulebook, p. 132-133"
+		},
+		{
+		"name": "Nightmare•",
+		"rating": "1",
+		"book": "Vampire: The Requiem Core Rulebook, p 133"
+		},
+		{
+		"name": "Nightmare••",
+		"rating": "2",
+		"book": "Vampire: The Requiem Core Rulebook, p 133"
+		},
+		{
+		"name": "Nightmare•••",
+		"rating": "3",
+		"book": "Vampire: The Requiem Core Rulebook, p 133"
+		},
+		{
+		"name": "Nightmare••••",
+		"rating": "4",
+		"book": "Vampire: The Requiem Core Rulebook, p 133"
+		},
+		{
+		"name": "Nightmare•••••",
+		"rating": "5",
+		"book": "Vampire: The Requiem Core Rulebook, p 133"
+		},
+		{
+		"name": "Praestantia•",
+		"rating": "1",
+		"book": "VII (VtR): page(s) 34"
+		},
+		{
+		"name": "Praestantia••",
+		"rating": "2",
+		"book": "VII (VtR): page(s) 34"
+		},
+		{
+		"name": "Praestantia•••",
+		"rating": "3",
+		"book": "VII (VtR): page(s) 34"
+		},
+		{
+		"name": "Praestantia••••",
+		"rating": "4",
+		"book": "VII (VtR): page(s) 34"
+		},
+		{
+		"name": "Praestantia•••••",
+		"rating": "5",
+		"book": "VII (VtR): page(s) 34"
+		},
+		{
+		"name": "Protean•",
+		"rating": "1",
+		"book": "Vampire: The Requiem Rulebook, p 138"
+		},
+		{
+		"name": "Protean••",
+		"rating": "2",
+		"book": "Vampire: The Requiem Rulebook, p 138"
+		},
+		{
+		"name": "Protean•••",
+		"rating": "3",
+		"book": "Vampire: The Requiem Rulebook, p 138"
+		},
+		{
+		"name": "Protean••••",
+		"rating": "4",
+		"book": "Vampire: The Requiem Rulebook, p 138"
+		},
+		{
+		"name": "Protean•••••",
+		"rating": "5",
+		"book": "Vampire: The Requiem Rulebook, p 138"
+		},
+		{
+		"name": "Ahranite Sorcery•",
+		"rating": "1",
+		"book": "VII (VtR): page(s) 35-38 "
+		},
+		{
+		"name": "Ahranite Sorcery••",
+		"rating": "2",
+		"book": "VII (VtR): page(s) 35-38 "
+		},
+		{
+		"name": "Ahranite Sorcery•••",
+		"rating": "3",
+		"book": "VII (VtR): page(s) 35-38 "
+		},
+		{
+		"name": "Ahranite Sorcery••••",
+		"rating": "4",
+		"book": "VII (VtR): page(s) 35-38 "
+		},
+		{
+		"name": "Ahranite Sorcery•••••",
+		"rating": "5",
+		"book": "VII (VtR): page(s) 35-38 "
+		},
+		{
+		"name": "Coils of the Dragon•",
+		"rating": "1",
+		"book": "Vampire: The Requiem (Core Rulebook) pp.149-150"
+		},
+		{
+		"name": "Coils of the Dragon••",
+		"rating": "2",
+		"book": "Vampire: The Requiem (Core Rulebook) pp.149-150"
+		},
+		{
+		"name": "Coils of the Dragon•••",
+		"rating": "3",
+		"book": "Vampire: The Requiem (Core Rulebook) pp.149-150"
+		},
+		{
+		"name": "Coils of the Dragon••••",
+		"rating": "4",
+		"book": "Vampire: The Requiem (Core Rulebook) pp.149-150"
+		},
+		{
+		"name": "Coils of the Dragon•••••",
+		"rating": "5",
+		"book": "Vampire: The Requiem (Core Rulebook) pp.149-150"
+		},
+		{
+		"name": "Crúac•",
+		"rating": "1",
+		"book": "Vampire: The Requiem Core Rulebook, p 142"
+		},
+		{
+		"name": "Crúac••",
+		"rating": "2",
+		"book": "Vampire: The Requiem Core Rulebook, p 142"
+		},
+		{
+		"name": "Crúac•••",
+		"rating": "3",
+		"book": "Vampire: The Requiem Core Rulebook, p 142"
+		},
+		{
+		"name": "Crúac••••",
+		"rating": "4",
+		"book": "Vampire: The Requiem Core Rulebook, p 142"
+		},
+		{
+		"name": "Crúac•••••",
+		"rating": "5",
+		"book": "Vampire: The Requiem Core Rulebook, p 142"
+		},
+		{
+		"name": "Theban Sorcery•",
+		"rating": "1",
+		"book": "Vampire the Requiem (Core Rulebook): pp. 145-148 "
+		},
+		{
+		"name": "Theban Sorcery••",
+		"rating": "2",
+		"book": "Vampire the Requiem (Core Rulebook): pp. 145-148 "
+		},
+		{
+		"name": "Theban Sorcery•••",
+		"rating": "3",
+		"book": "Vampire the Requiem (Core Rulebook): pp. 145-148 "
+		},
+		{
+		"name": "Theban Sorcery••••",
+		"rating": "4",
+		"book": "Vampire the Requiem (Core Rulebook): pp. 145-148 "
+		},
+		{
+		"name": "Theban Sorcery•••••",
+		"rating": "5",
+		"book": "Vampire the Requiem (Core Rulebook): pp. 145-148 "
+		},
+		{
+		"name": "Veneficia•",
+		"rating": "1",
+		"book": "Requiem for Rome pp. 114-117"
+		},
+		{
+		"name": "Veneficia••",
+		"rating": "2",
+		"book": "Requiem for Rome pp. 114-117"
+		},
+		{
+		"name": "Veneficia•••",
+		"rating": "3",
+		"book": "Requiem for Rome pp. 114-117"
+		},
+		{
+		"name": "Veneficia••••",
+		"rating": "4",
+		"book": "Requiem for Rome pp. 114-117"
+		},
+		{
+		"name": "Veneficia•••••",
+		"rating": "5",
+		"book": "Requiem for Rome pp. 114-117"
+		},
+		{
+		"name": "Abjurism•",
+		"rating": "1",
+		"book": "Ancient Bloodlines (VtR): page(s) 92-96 "
+		},
+		{
+		"name": "Abjurism••",
+		"rating": "2",
+		"book": "Ancient Bloodlines (VtR): page(s) 92-96 "
+		},
+		{
+		"name": "Abjurism•••",
+		"rating": "3",
+		"book": "Ancient Bloodlines (VtR): page(s) 92-96 "
+		},
+		{
+		"name": "Abjurism••••",
+		"rating": "4",
+		"book": "Ancient Bloodlines (VtR): page(s) 92-96 "
+		},
+		{
+		"name": "Abjurism•••••",
+		"rating": "5",
+		"book": "Ancient Bloodlines (VtR): page(s) 92-96 "
+		},
+		{
+		"name": "Amphivena•",
+		"rating": "1",
+		"book": "Circle of the Crone (VtR): page(s) 186-188 "
+		},
+		{
+		"name": "Amphivena••",
+		"rating": "2",
+		"book": "Circle of the Crone (VtR): page(s) 186-188 "
+		},
+		{
+		"name": "Amphivena•••",
+		"rating": "3",
+		"book": "Circle of the Crone (VtR): page(s) 186-188 "
+		},
+		{
+		"name": "Amphivena••••",
+		"rating": "4",
+		"book": "Circle of the Crone (VtR): page(s) 186-188 "
+		},
+		{
+		"name": "Amphivena•••••",
+		"rating": "5",
+		"book": "Circle of the Crone (VtR): page(s) 186-188 "
+		},
+		{
+		"name": "Asphyx•",
+		"rating": "1",
+		"book": "Ancient Bloodlines (VtR): page(s) 23-26 "
+		},
+		{
+		"name": "Asphyx••",
+		"rating": "2",
+		"book": "Ancient Bloodlines (VtR): page(s) 23-26 "
+		},
+		{
+		"name": "Asphyx•••",
+		"rating": "3",
+		"book": "Ancient Bloodlines (VtR): page(s) 23-26 "
+		},
+		{
+		"name": "Asphyx••••",
+		"rating": "4",
+		"book": "Ancient Bloodlines (VtR): page(s) 23-26 "
+		},
+		{
+		"name": "Asphyx•••••",
+		"rating": "5",
+		"book": "Ancient Bloodlines (VtR): page(s) 23-26 "
+		},
+		{
+		"name": "Bhumisparsa•",
+		"rating": "1",
+		"book": "Ancient Bloodlines (VtR): page(s) 124 "
+		},
+		{
+		"name": "Bhumisparsa••",
+		"rating": "2",
+		"book": "Ancient Bloodlines (VtR): page(s) 124 "
+		},
+		{
+		"name": "Bhumisparsa•••",
+		"rating": "3",
+		"book": "Ancient Bloodlines (VtR): page(s) 124 "
+		},
+		{
+		"name": "Bhumisparsa••••",
+		"rating": "4",
+		"book": "Ancient Bloodlines (VtR): page(s) 124 "
+		},
+		{
+		"name": "Bhumisparsa•••••",
+		"rating": "5",
+		"book": "Ancient Bloodlines (VtR): page(s) 124 "
+		},
+		{
+		"name": "Bloodworking•",
+		"rating": "1",
+		"book": "Mekhet: Shadows in the Dark (VtR): page(s) 100-101 "
+		},
+		{
+		"name": "Bloodworking••",
+		"rating": "2",
+		"book": "Mekhet: Shadows in the Dark (VtR): page(s) 100-101 "
+		},
+		{
+		"name": "Bloodworking•••",
+		"rating": "3",
+		"book": "Mekhet: Shadows in the Dark (VtR): page(s) 100-101 "
+		},
+		{
+		"name": "Bloodworking••••",
+		"rating": "4",
+		"book": "Mekhet: Shadows in the Dark (VtR): page(s) 100-101 "
+		},
+		{
+		"name": "Bloodworking•••••",
+		"rating": "5",
+		"book": "Mekhet: Shadows in the Dark (VtR): page(s) 100-101 "
+		},
+		{
+		"name": "Blut Alchemie•",
+		"rating": "1",
+		"book": "Ancient Bloodlines (VtR): page(s) 83-88 "
+		},
+		{
+		"name": "Blut Alchemie••",
+		"rating": "2",
+		"book": "Ancient Bloodlines (VtR): page(s) 83-88 "
+		},
+		{
+		"name": "Blut Alchemie•••",
+		"rating": "3",
+		"book": "Ancient Bloodlines (VtR): page(s) 83-88 "
+		},
+		{
+		"name": "Blut Alchemie••••",
+		"rating": "4",
+		"book": "Ancient Bloodlines (VtR): page(s) 83-88 "
+		},
+		{
+		"name": "Blut Alchemie•••••",
+		"rating": "5",
+		"book": "Ancient Bloodlines (VtR): page(s) 83-88 "
+		},
+		{
+		"name": "Cachexy•",
+		"rating": "1",
+		"book": "Vampire: The Requiem Core Rulebook, p. 248"
+		},
+		{
+		"name": "Cachexy••",
+		"rating": "2",
+		"book": "Vampire: The Requiem Core Rulebook, p. 248"
+		},
+		{
+		"name": "Cachexy•••",
+		"rating": "3",
+		"book": "Vampire: The Requiem Core Rulebook, p. 248"
+		},
+		{
+		"name": "Cachexy••••",
+		"rating": "4",
+		"book": "Vampire: The Requiem Core Rulebook, p. 248"
+		},
+		{
+		"name": "Cachexy•••••",
+		"rating": "5",
+		"book": "Vampire: The Requiem Core Rulebook, p. 248"
+		},
+		{
+		"name": "Carrefour•",
+		"rating": "1",
+		"book": "Ancient Bloodlines (VtR): page(s) 64-68 "
+		},
+		{
+		"name": "Carrefour••",
+		"rating": "2",
+		"book": "Ancient Bloodlines (VtR): page(s) 64-68 "
+		},
+		{
+		"name": "Carrefour•••",
+		"rating": "3",
+		"book": "Ancient Bloodlines (VtR): page(s) 64-68 "
+		},
+		{
+		"name": "Carrefour••••",
+		"rating": "4",
+		"book": "Ancient Bloodlines (VtR): page(s) 64-68 "
+		},
+		{
+		"name": "Carrefour•••••",
+		"rating": "5",
+		"book": "Ancient Bloodlines (VtR): page(s) 64-68 "
+		},
+		{
+		"name": "Cattiveria•",
+		"rating": "1",
+		"book": "Bloodlines: The Chosen, p.71"
+		},
+		{
+		"name": "Cattiveria••",
+		"rating": "2",
+		"book": "Bloodlines: The Chosen, p.71"
+		},
+		{
+		"name": "Cattiveria•••",
+		"rating": "3",
+		"book": "Bloodlines: The Chosen, p.71"
+		},
+		{
+		"name": "Cattiveria••••",
+		"rating": "4",
+		"book": "Bloodlines: The Chosen, p.71"
+		},
+		{
+		"name": "Cattiveria•••••",
+		"rating": "5",
+		"book": "Bloodlines: The Chosen, p.71"
+		},
+		{
+		"name": "Choronzon•",
+		"rating": "1",
+		"book": "Belial's Brood page(s) 126-128. "
+		},
+		{
+		"name": "Choronzon••",
+		"rating": "2",
+		"book": "Belial's Brood page(s) 126-128. "
+		},
+		{
+		"name": "Choronzon•••",
+		"rating": "3",
+		"book": "Belial's Brood page(s) 126-128. "
+		},
+		{
+		"name": "Choronzon••••",
+		"rating": "4",
+		"book": "Belial's Brood page(s) 126-128. "
+		},
+		{
+		"name": "Choronzon•••••",
+		"rating": "5",
+		"book": "Belial's Brood page(s) 126-128. "
+		},
+		{
+		"name": "Constance•",
+		"rating": "1",
+		"book": "VTR: Lancea Sanctum, p. 178 "
+		},
+		{
+		"name": "Constance••",
+		"rating": "2",
+		"book": "VTR: Lancea Sanctum, p. 178 "
+		},
+		{
+		"name": "Constance•••",
+		"rating": "3",
+		"book": "VTR: Lancea Sanctum, p. 178 "
+		},
+		{
+		"name": "Constance••••",
+		"rating": "4",
+		"book": "VTR: Lancea Sanctum, p. 178 "
+		},
+		{
+		"name": "Constance•••••",
+		"rating": "5",
+		"book": "VTR: Lancea Sanctum, p. 178 "
+		},
+		{
+		"name": "Courtoisie•",
+		"rating": "1",
+		"book": "VTR: Invictus, pp. 189-192 "
+		},
+		{
+		"name": "Courtoisie••",
+		"rating": "2",
+		"book": "VTR: Invictus, pp. 189-192 "
+		},
+		{
+		"name": "Courtoisie•••",
+		"rating": "3",
+		"book": "VTR: Invictus, pp. 189-192 "
+		},
+		{
+		"name": "Courtoisie••••",
+		"rating": "4",
+		"book": "VTR: Invictus, pp. 189-192 "
+		},
+		{
+		"name": "Courtoisie•••••",
+		"rating": "5",
+		"book": "VTR: Invictus, pp. 189-192 "
+		},
+		{
+		"name": "Crochan•",
+		"rating": "1",
+		"book": "VTR: Bloodlines: The Legendary, pp. 18-22 "
+		},
+		{
+		"name": "Crochan••",
+		"rating": "2",
+		"book": "VTR: Bloodlines: The Legendary, pp. 18-22 "
+		},
+		{
+		"name": "Crochan•••",
+		"rating": "3",
+		"book": "VTR: Bloodlines: The Legendary, pp. 18-22 "
+		},
+		{
+		"name": "Crochan••••",
+		"rating": "4",
+		"book": "VTR: Bloodlines: The Legendary, pp. 18-22 "
+		},
+		{
+		"name": "Crochan•••••",
+		"rating": "5",
+		"book": "VTR: Bloodlines: The Legendary, pp. 18-22 "
+		},
+		{
+		"name": "Despond•",
+		"rating": "1",
+		"book": "Bloodlines: The Legendary (VtR): page(s) 47-50 "
+		},
+		{
+		"name": "Despond••",
+		"rating": "2",
+		"book": "Bloodlines: The Legendary (VtR): page(s) 47-50 "
+		},
+		{
+		"name": "Despond•••",
+		"rating": "3",
+		"book": "Bloodlines: The Legendary (VtR): page(s) 47-50 "
+		},
+		{
+		"name": "Despond••••",
+		"rating": "4",
+		"book": "Bloodlines: The Legendary (VtR): page(s) 47-50 "
+		},
+		{
+		"name": "Despond•••••",
+		"rating": "5",
+		"book": "Bloodlines: The Legendary (VtR): page(s) 47-50 "
+		},
+		{
+		"name": "Domus•",
+		"rating": "1",
+		"book": "VTR: The Invictus, pp. 192-196, 212-213 "
+		},
+		{
+		"name": "Domus••",
+		"rating": "2",
+		"book": "VTR: The Invictus, pp. 192-196, 212-213 "
+		},
+		{
+		"name": "Domus•••",
+		"rating": "3",
+		"book": "VTR: The Invictus, pp. 192-196, 212-213 "
+		},
+		{
+		"name": "Domus••••",
+		"rating": "4",
+		"book": "VTR: The Invictus, pp. 192-196, 212-213 "
+		},
+		{
+		"name": "Domus•••••",
+		"rating": "5",
+		"book": "VTR: The Invictus, pp. 192-196, 212-213 "
+		},
+		{
+		"name": "Embrocation•",
+		"rating": "1",
+		"book": "VTR: Bloodlines: The Hidden, p. 112 -115 "
+		},
+		{
+		"name": "Embrocation••",
+		"rating": "2",
+		"book": "VTR: Bloodlines: The Hidden, p. 112 -115 "
+		},
+		{
+		"name": "Embrocation•••",
+		"rating": "3",
+		"book": "VTR: Bloodlines: The Hidden, p. 112 -115 "
+		},
+		{
+		"name": "Embrocation••••",
+		"rating": "4",
+		"book": "VTR: Bloodlines: The Hidden, p. 112 -115 "
+		},
+		{
+		"name": "Embrocation•••••",
+		"rating": "5",
+		"book": "VTR: Bloodlines: The Hidden, p. 112 -115 "
+		},
+		{
+		"name": "Essentiaphagia•",
+		"rating": "1",
+		"book": "Ordo Dracul (VtR) pp. 179-184 "
+		},
+		{
+		"name": "Essentiaphagia••",
+		"rating": "2",
+		"book": "Ordo Dracul (VtR) pp. 179-184 "
+		},
+		{
+		"name": "Essentiaphagia•••",
+		"rating": "3",
+		"book": "Ordo Dracul (VtR) pp. 179-184 "
+		},
+		{
+		"name": "Essentiaphagia••••",
+		"rating": "4",
+		"book": "Ordo Dracul (VtR) pp. 179-184 "
+		},
+		{
+		"name": "Essentiaphagia•••••",
+		"rating": "5",
+		"book": "Ordo Dracul (VtR) pp. 179-184 "
+		},
+		{
+		"name": "Eupraxia•",
+		"rating": "1",
+		"book": "Ordo Dracul (VtR) pp. 184-188 "
+		},
+		{
+		"name": "Eupraxia••",
+		"rating": "2",
+		"book": "Ordo Dracul (VtR) pp. 184-188 "
+		},
+		{
+		"name": "Eupraxia•••",
+		"rating": "3",
+		"book": "Ordo Dracul (VtR) pp. 184-188 "
+		},
+		{
+		"name": "Eupraxia••••",
+		"rating": "4",
+		"book": "Ordo Dracul (VtR) pp. 184-188 "
+		},
+		{
+		"name": "Eupraxia•••••",
+		"rating": "5",
+		"book": "Ordo Dracul (VtR) pp. 184-188 "
+		},
+		{
+		"name": "Getsumei•",
+		"rating": "1",
+		"book": "Vampire the Requiem (Core Rulebook) pp. 250-253"
+		},
+		{
+		"name": "Getsumei••",
+		"rating": "2",
+		"book": "Vampire the Requiem (Core Rulebook) pp. 250-253"
+		},
+		{
+		"name": "Getsumei•••",
+		"rating": "3",
+		"book": "Vampire the Requiem (Core Rulebook) pp. 250-253"
+		},
+		{
+		"name": "Getsumei••••",
+		"rating": "4",
+		"book": "Vampire the Requiem (Core Rulebook) pp. 250-253"
+		},
+		{
+		"name": "Getsumei•••••",
+		"rating": "5",
+		"book": "Vampire the Requiem (Core Rulebook) pp. 250-253"
+		},
+		{
+		"name": "Gilded Cage•",
+		"rating": "1",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 35-37 "
+		},
+		{
+		"name": "Gilded Cage••",
+		"rating": "2",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 35-37 "
+		},
+		{
+		"name": "Gilded Cage•••",
+		"rating": "3",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 35-37 "
+		},
+		{
+		"name": "Gilded Cage••••",
+		"rating": "4",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 35-37 "
+		},
+		{
+		"name": "Gilded Cage•••••",
+		"rating": "5",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 35-37 "
+		},
+		{
+		"name": "Gustus•",
+		"rating": "1",
+		"book": "Bloodlines: The Legendary page(s) 100-102"
+		},
+		{
+		"name": "Gustus••",
+		"rating": "2",
+		"book": "Bloodlines: The Legendary page(s) 100-102"
+		},
+		{
+		"name": "Gustus•••",
+		"rating": "3",
+		"book": "Bloodlines: The Legendary page(s) 100-102"
+		},
+		{
+		"name": "Gustus••••",
+		"rating": "4",
+		"book": "Bloodlines: The Legendary page(s) 100-102"
+		},
+		{
+		"name": "Gustus•••••",
+		"rating": "5",
+		"book": "Bloodlines: The Legendary page(s) 100-102"
+		},
+		{
+		"name": "Hypnagogia•",
+		"rating": "1",
+		"book": "Ancient Bloodlines (VtR): page(s) 163-166 "
+		},
+		{
+		"name": "Hypnagogia••",
+		"rating": "2",
+		"book": "Ancient Bloodlines (VtR): page(s) 163-166 "
+		},
+		{
+		"name": "Hypnagogia•••",
+		"rating": "3",
+		"book": "Ancient Bloodlines (VtR): page(s) 163-166 "
+		},
+		{
+		"name": "Hypnagogia••••",
+		"rating": "4",
+		"book": "Ancient Bloodlines (VtR): page(s) 163-166 "
+		},
+		{
+		"name": "Hypnagogia•••••",
+		"rating": "5",
+		"book": "Ancient Bloodlines (VtR): page(s) 163-166 "
+		},
+		{
+		"name": "Impurity•",
+		"rating": "1",
+		"book": "Carthians (VtR): page(s) 184-188 "
+		},
+		{
+		"name": "Impurity••",
+		"rating": "2",
+		"book": "Carthians (VtR): page(s) 184-188 "
+		},
+		{
+		"name": "Impurity•••",
+		"rating": "3",
+		"book": "Carthians (VtR): page(s) 184-188 "
+		},
+		{
+		"name": "Impurity••••",
+		"rating": "4",
+		"book": "Carthians (VtR): page(s) 184-188 "
+		},
+		{
+		"name": "Impurity•••••",
+		"rating": "5",
+		"book": "Carthians (VtR): page(s) 184-188 "
+		},
+		{
+		"name": "Insomnium•",
+		"rating": "1",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 15-19 "
+		},
+		{
+		"name": "Insomnium••",
+		"rating": "2",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 15-19 "
+		},
+		{
+		"name": "Insomnium•••",
+		"rating": "3",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 15-19 "
+		},
+		{
+		"name": "Insomnium••••",
+		"rating": "4",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 15-19 "
+		},
+		{
+		"name": "Insomnium•••••",
+		"rating": "5",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 15-19 "
+		},
+		{
+		"name": "Institutionalize•",
+		"rating": "1",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 73-77 "
+		},
+		{
+		"name": "Institutionalize••",
+		"rating": "2",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 73-77 "
+		},
+		{
+		"name": "Institutionalize•••",
+		"rating": "3",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 73-77 "
+		},
+		{
+		"name": "Institutionalize••••",
+		"rating": "4",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 73-77 "
+		},
+		{
+		"name": "Institutionalize•••••",
+		"rating": "5",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 73-77 "
+		},
+		{
+		"name": "Kamen•",
+		"rating": "1",
+		"book": "VTR: The Invictus, pp. 199-202 "
+		},
+		{
+		"name": "Kamen••",
+		"rating": "2",
+		"book": "VTR: The Invictus, pp. 199-202 "
+		},
+		{
+		"name": "Kamen•••",
+		"rating": "3",
+		"book": "VTR: The Invictus, pp. 199-202 "
+		},
+		{
+		"name": "Kamen••••",
+		"rating": "4",
+		"book": "VTR: The Invictus, pp. 199-202 "
+		},
+		{
+		"name": "Kamen•••••",
+		"rating": "5",
+		"book": "VTR: The Invictus, pp. 199-202 "
+		},
+		{
+		"name": "Kingjan•",
+		"rating": "1",
+		"book": "VTR: Bloodlines: The Chosen, pp. 91-93 "
+		},
+		{
+		"name": "Kingjan••",
+		"rating": "2",
+		"book": "VTR: Bloodlines: The Chosen, pp. 91-93 "
+		},
+		{
+		"name": "Kingjan•••",
+		"rating": "3",
+		"book": "VTR: Bloodlines: The Chosen, pp. 91-93 "
+		},
+		{
+		"name": "Kingjan••••",
+		"rating": "4",
+		"book": "VTR: Bloodlines: The Chosen, pp. 91-93 "
+		},
+		{
+		"name": "Kingjan•••••",
+		"rating": "5",
+		"book": "VTR: Bloodlines: The Chosen, pp. 91-93 "
+		},
+		{
+		"name": "Licencieux•",
+		"rating": "1",
+		"book": "Bloodlines: The Chosen (VtR): pp. 42-45 "
+		},
+		{
+		"name": "Licencieux••",
+		"rating": "2",
+		"book": "Bloodlines: The Chosen (VtR): pp. 42-45 "
+		},
+		{
+		"name": "Licencieux•••",
+		"rating": "3",
+		"book": "Bloodlines: The Chosen (VtR): pp. 42-45 "
+		},
+		{
+		"name": "Licencieux••••",
+		"rating": "4",
+		"book": "Bloodlines: The Chosen (VtR): pp. 42-45 "
+		},
+		{
+		"name": "Licencieux•••••",
+		"rating": "5",
+		"book": "Bloodlines: The Chosen (VtR): pp. 42-45 "
+		},
+		{
+		"name": "Linagem•",
+		"rating": "1",
+		"book": "Ancient Bloodlines (VtR): page(s) 102-104 "
+		},
+		{
+		"name": "Linagem••",
+		"rating": "2",
+		"book": "Ancient Bloodlines (VtR): page(s) 102-104 "
+		},
+		{
+		"name": "Linagem•••",
+		"rating": "3",
+		"book": "Ancient Bloodlines (VtR): page(s) 102-104 "
+		},
+		{
+		"name": "Linagem••••",
+		"rating": "4",
+		"book": "Ancient Bloodlines (VtR): page(s) 102-104 "
+		},
+		{
+		"name": "Linagem•••••",
+		"rating": "5",
+		"book": "Ancient Bloodlines (VtR): page(s) 102-104 "
+		},
+		{
+		"name": "Lithopedia•",
+		"rating": "1",
+		"book": "Night Horrors: Immortal Sinners (VtR): page(s) 118-120 "
+		},
+		{
+		"name": "Lithopedia••",
+		"rating": "2",
+		"book": "Night Horrors: Immortal Sinners (VtR): page(s) 118-120 "
+		},
+		{
+		"name": "Lithopedia•••",
+		"rating": "3",
+		"book": "Night Horrors: Immortal Sinners (VtR): page(s) 118-120 "
+		},
+		{
+		"name": "Lithopedia••••",
+		"rating": "4",
+		"book": "Night Horrors: Immortal Sinners (VtR): page(s) 118-120 "
+		},
+		{
+		"name": "Lithopedia•••••",
+		"rating": "5",
+		"book": "Night Horrors: Immortal Sinners (VtR): page(s) 118-120 "
+		},
+		{
+		"name": "Memento Mori•",
+		"rating": "1",
+		"book": "Lancea Sanctum (VtR): page(s) 178-182 "
+		},
+		{
+		"name": "Memento Mori••",
+		"rating": "2",
+		"book": "Lancea Sanctum (VtR): page(s) 178-182 "
+		},
+		{
+		"name": "Memento Mori•••",
+		"rating": "3",
+		"book": "Lancea Sanctum (VtR): page(s) 178-182 "
+		},
+		{
+		"name": "Memento Mori••••",
+		"rating": "4",
+		"book": "Lancea Sanctum (VtR): page(s) 178-182 "
+		},
+		{
+		"name": "Memento Mori•••••",
+		"rating": "5",
+		"book": "Lancea Sanctum (VtR): page(s) 178-182 "
+		},
+		{
+		"name": "Meminisse•",
+		"rating": "1",
+		"book": "Shadows in the Dark: Mekhet (VtR): page(s) 104-106 "
+		},
+		{
+		"name": "Meminisse••",
+		"rating": "2",
+		"book": "Shadows in the Dark: Mekhet (VtR): page(s) 104-106 "
+		},
+		{
+		"name": "Meminisse•••",
+		"rating": "3",
+		"book": "Shadows in the Dark: Mekhet (VtR): page(s) 104-106 "
+		},
+		{
+		"name": "Meminisse••••",
+		"rating": "4",
+		"book": "Shadows in the Dark: Mekhet (VtR): page(s) 104-106 "
+		},
+		{
+		"name": "Meminisse•••••",
+		"rating": "5",
+		"book": "Shadows in the Dark: Mekhet (VtR): page(s) 104-106 "
+		},
+		{
+		"name": "Mimetismo•",
+		"rating": "1",
+		"book": "VTR: Bloodlines: The Chosen, pp. 32-35 "
+		},
+		{
+		"name": "Mimetismo••",
+		"rating": "2",
+		"book": "VTR: Bloodlines: The Chosen, pp. 32-35 "
+		},
+		{
+		"name": "Mimetismo•••",
+		"rating": "3",
+		"book": "VTR: Bloodlines: The Chosen, pp. 32-35 "
+		},
+		{
+		"name": "Mimetismo••••",
+		"rating": "4",
+		"book": "VTR: Bloodlines: The Chosen, pp. 32-35 "
+		},
+		{
+		"name": "Mimetismo•••••",
+		"rating": "5",
+		"book": "VTR: Bloodlines: The Chosen, pp. 32-35 "
+		},
+		{
+		"name": "Mortualia•",
+		"rating": "1",
+		"book": "Vampire: The Requiem: Ordo Dracul: pg 188-192 "
+		},
+		{
+		"name": "Mortualia••",
+		"rating": "2",
+		"book": "Vampire: The Requiem: Ordo Dracul: pg 188-192 "
+		},
+		{
+		"name": "Mortualia•••",
+		"rating": "3",
+		"book": "Vampire: The Requiem: Ordo Dracul: pg 188-192 "
+		},
+		{
+		"name": "Mortualia••••",
+		"rating": "4",
+		"book": "Vampire: The Requiem: Ordo Dracul: pg 188-192 "
+		},
+		{
+		"name": "Mortualia•••••",
+		"rating": "5",
+		"book": "Vampire: The Requiem: Ordo Dracul: pg 188-192 "
+		},
+		{
+		"name": "Nahdad•",
+		"rating": "1",
+		"book": "Lancea Sanctum page(s) 182. "
+		},
+		{
+		"name": "Nahdad••",
+		"rating": "2",
+		"book": "Lancea Sanctum page(s) 182. "
+		},
+		{
+		"name": "Nahdad•••",
+		"rating": "3",
+		"book": "Lancea Sanctum page(s) 182. "
+		},
+		{
+		"name": "Nahdad••••",
+		"rating": "4",
+		"book": "Lancea Sanctum page(s) 182. "
+		},
+		{
+		"name": "Nahdad•••••",
+		"rating": "5",
+		"book": "Lancea Sanctum page(s) 182. "
+		},
+		{
+		"name": "Nduru•",
+		"rating": "1",
+		"book": "Ancient Bloodlines (VtR): page(s) 109-111 "
+		},
+		{
+		"name": "Nduru••",
+		"rating": "2",
+		"book": "Ancient Bloodlines (VtR): page(s) 109-111 "
+		},
+		{
+		"name": "Nduru•••",
+		"rating": "3",
+		"book": "Ancient Bloodlines (VtR): page(s) 109-111 "
+		},
+		{
+		"name": "Nduru••••",
+		"rating": "4",
+		"book": "Ancient Bloodlines (VtR): page(s) 109-111 "
+		},
+		{
+		"name": "Nduru•••••",
+		"rating": "5",
+		"book": "Ancient Bloodlines (VtR): page(s) 109-111 "
+		},
+		{
+		"name": "Nepenthe•",
+		"rating": "1",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 26-29 "
+		},
+		{
+		"name": "Nepenthe••",
+		"rating": "2",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 26-29 "
+		},
+		{
+		"name": "Nepenthe•••",
+		"rating": "3",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 26-29 "
+		},
+		{
+		"name": "Nepenthe••••",
+		"rating": "4",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 26-29 "
+		},
+		{
+		"name": "Nepenthe•••••",
+		"rating": "5",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 26-29 "
+		},
+		{
+		"name": "Obtenebration•",
+		"rating": "1",
+		"book": "VTR: Bloodlines: The Hidden, p. 64 -67 "
+		},
+		{
+		"name": "Obtenebration••",
+		"rating": "2",
+		"book": "VTR: Bloodlines: The Hidden, p. 64 -67 "
+		},
+		{
+		"name": "Obtenebration•••",
+		"rating": "3",
+		"book": "VTR: Bloodlines: The Hidden, p. 64 -67 "
+		},
+		{
+		"name": "Obtenebration••••",
+		"rating": "4",
+		"book": "VTR: Bloodlines: The Hidden, p. 64 -67 "
+		},
+		{
+		"name": "Obtenebration•••••",
+		"rating": "5",
+		"book": "VTR: Bloodlines: The Hidden, p. 64 -67 "
+		},
+		{
+		"name": "Ortam•",
+		"rating": "1",
+		"book": "Bloodlines: The Legendary page(s) 75-77. "
+		},
+		{
+		"name": "Ortam••",
+		"rating": "2",
+		"book": "Bloodlines: The Legendary page(s) 75-77. "
+		},
+		{
+		"name": "Ortam•••",
+		"rating": "3",
+		"book": "Bloodlines: The Legendary page(s) 75-77. "
+		},
+		{
+		"name": "Ortam••••",
+		"rating": "4",
+		"book": "Bloodlines: The Legendary page(s) 75-77. "
+		},
+		{
+		"name": "Ortam•••••",
+		"rating": "5",
+		"book": "Bloodlines: The Legendary page(s) 75-77. "
+		},
+		{
+		"name": "Perfidy•",
+		"rating": "1",
+		"book": "VTR: Invictus (book), p. 196 -199 "
+		},
+		{
+		"name": "Perfidy••",
+		"rating": "2",
+		"book": "VTR: Invictus (book), p. 196 -199 "
+		},
+		{
+		"name": "Perfidy•••",
+		"rating": "3",
+		"book": "VTR: Invictus (book), p. 196 -199 "
+		},
+		{
+		"name": "Perfidy••••",
+		"rating": "4",
+		"book": "VTR: Invictus (book), p. 196 -199 "
+		},
+		{
+		"name": "Perfidy•••••",
+		"rating": "5",
+		"book": "VTR: Invictus (book), p. 196 -199 "
+		},
+		{
+		"name": "Phagia•",
+		"rating": "1",
+		"book": "Bloodlines: The Chosen, pp51-54 "
+		},
+		{
+		"name": "Phagia••",
+		"rating": "2",
+		"book": "Bloodlines: The Chosen, pp51-54 "
+		},
+		{
+		"name": "Phagia•••",
+		"rating": "3",
+		"book": "Bloodlines: The Chosen, pp51-54 "
+		},
+		{
+		"name": "Phagia••••",
+		"rating": "4",
+		"book": "Bloodlines: The Chosen, pp51-54 "
+		},
+		{
+		"name": "Phagia•••••",
+		"rating": "5",
+		"book": "Bloodlines: The Chosen, pp51-54 "
+		},
+		{
+		"name": "Ralab•",
+		"rating": "1",
+		"book": "Circle of the Crone (VtR): page(s) 188-191 "
+		},
+		{
+		"name": "Ralab••",
+		"rating": "2",
+		"book": "Circle of the Crone (VtR): page(s) 188-191 "
+		},
+		{
+		"name": "Ralab•••",
+		"rating": "3",
+		"book": "Circle of the Crone (VtR): page(s) 188-191 "
+		},
+		{
+		"name": "Ralab••••",
+		"rating": "4",
+		"book": "Circle of the Crone (VtR): page(s) 188-191 "
+		},
+		{
+		"name": "Ralab•••••",
+		"rating": "5",
+		"book": "Circle of the Crone (VtR): page(s) 188-191 "
+		},
+		{
+		"name": "Sakti Pata•",
+		"rating": "1",
+		"book": "Ancient Bloodlines (VtR): page(s) 50-52 "
+		},
+		{
+		"name": "Sakti Pata••",
+		"rating": "2",
+		"book": "Ancient Bloodlines (VtR): page(s) 50-52 "
+		},
+		{
+		"name": "Sakti Pata•••",
+		"rating": "3",
+		"book": "Ancient Bloodlines (VtR): page(s) 50-52 "
+		},
+		{
+		"name": "Sakti Pata••••",
+		"rating": "4",
+		"book": "Ancient Bloodlines (VtR): page(s) 50-52 "
+		},
+		{
+		"name": "Sakti Pata•••••",
+		"rating": "5",
+		"book": "Ancient Bloodlines (VtR): page(s) 50-52 "
+		},
+		{
+		"name": "Scourge•",
+		"rating": "1",
+		"book": "VTR: Lancea Sanctum, pp. 182-185 "
+		},
+		{
+		"name": "Scourge••",
+		"rating": "2",
+		"book": "VTR: Lancea Sanctum, pp. 182-185 "
+		},
+		{
+		"name": "Scourge•••",
+		"rating": "3",
+		"book": "VTR: Lancea Sanctum, pp. 182-185 "
+		},
+		{
+		"name": "Scourge••••",
+		"rating": "4",
+		"book": "VTR: Lancea Sanctum, pp. 182-185 "
+		},
+		{
+		"name": "Scourge•••••",
+		"rating": "5",
+		"book": "VTR: Lancea Sanctum, pp. 182-185 "
+		},
+		{
+		"name": "Serendipity•",
+		"rating": "1",
+		"book": "Carthians page(s) 188-191. "
+		},
+		{
+		"name": "Serendipity••",
+		"rating": "2",
+		"book": "Carthians page(s) 188-191. "
+		},
+		{
+		"name": "Serendipity•••",
+		"rating": "3",
+		"book": "Carthians page(s) 188-191. "
+		},
+		{
+		"name": "Serendipity••••",
+		"rating": "4",
+		"book": "Carthians page(s) 188-191. "
+		},
+		{
+		"name": "Serendipity•••••",
+		"rating": "5",
+		"book": "Carthians page(s) 188-191. "
+		},
+		{
+		"name": "Shihai•",
+		"rating": "1",
+		"book": "Bloodlines: The Legendary page(s) 87-89. "
+		},
+		{
+		"name": "Shihai••",
+		"rating": "2",
+		"book": "Bloodlines: The Legendary page(s) 87-89. "
+		},
+		{
+		"name": "Shihai•••",
+		"rating": "3",
+		"book": "Bloodlines: The Legendary page(s) 87-89. "
+		},
+		{
+		"name": "Shihai••••",
+		"rating": "4",
+		"book": "Bloodlines: The Legendary page(s) 87-89. "
+		},
+		{
+		"name": "Shihai•••••",
+		"rating": "5",
+		"book": "Bloodlines: The Legendary page(s) 87-89. "
+		},
+		{
+		"name": "Spiritus Sancti•",
+		"rating": "1",
+		"book": "VTR: Ancient Bloodlines, pp. 132-135 "
+		},
+		{
+		"name": "Spiritus Sancti••",
+		"rating": "2",
+		"book": "VTR: Ancient Bloodlines, pp. 132-135 "
+		},
+		{
+		"name": "Spiritus Sancti•••",
+		"rating": "3",
+		"book": "VTR: Ancient Bloodlines, pp. 132-135 "
+		},
+		{
+		"name": "Spiritus Sancti••••",
+		"rating": "4",
+		"book": "VTR: Ancient Bloodlines, pp. 132-135 "
+		},
+		{
+		"name": "Spiritus Sancti•••••",
+		"rating": "5",
+		"book": "VTR: Ancient Bloodlines, pp. 132-135 "
+		},
+		{
+		"name": "Stigmatica•",
+		"rating": "1",
+		"book": "Bloodlines: The Hidden page(s) 54-56. "
+		},
+		{
+		"name": "Stigmatica••",
+		"rating": "2",
+		"book": "Bloodlines: The Hidden page(s) 54-56. "
+		},
+		{
+		"name": "Stigmatica•••",
+		"rating": "3",
+		"book": "Bloodlines: The Hidden page(s) 54-56. "
+		},
+		{
+		"name": "Stigmatica••••",
+		"rating": "4",
+		"book": "Bloodlines: The Hidden page(s) 54-56. "
+		},
+		{
+		"name": "Stigmatica•••••",
+		"rating": "5",
+		"book": "Bloodlines: The Hidden page(s) 54-56. "
+		},
+		{
+		"name": "Sublunario•",
+		"rating": "1",
+		"book": "Shadows of Mexico (WoD): page(s) 104-105 "
+		},
+		{
+		"name": "Sublunario••",
+		"rating": "2",
+		"book": "Shadows of Mexico (WoD): page(s) 104-105 "
+		},
+		{
+		"name": "Sublunario•••",
+		"rating": "3",
+		"book": "Shadows of Mexico (WoD): page(s) 104-105 "
+		},
+		{
+		"name": "Sublunario••••",
+		"rating": "4",
+		"book": "Shadows of Mexico (WoD): page(s) 104-105 "
+		},
+		{
+		"name": "Sublunario•••••",
+		"rating": "5",
+		"book": "Shadows of Mexico (WoD): page(s) 104-105 "
+		},
+		{
+		"name": "Suikast•",
+		"rating": "1",
+		"book": "VTR: Ordo Dracul (book), p. 192 "
+		},
+		{
+		"name": "Suikast••",
+		"rating": "2",
+		"book": "VTR: Ordo Dracul (book), p. 192 "
+		},
+		{
+		"name": "Suikast•••",
+		"rating": "3",
+		"book": "VTR: Ordo Dracul (book), p. 192 "
+		},
+		{
+		"name": "Suikast••••",
+		"rating": "4",
+		"book": "VTR: Ordo Dracul (book), p. 192 "
+		},
+		{
+		"name": "Suikast•••••",
+		"rating": "5",
+		"book": "VTR: Ordo Dracul (book), p. 192 "
+		},
+		{
+		"name": "Sunnikuse•",
+		"rating": "1",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 43-47 "
+		},
+		{
+		"name": "Sunnikuse••",
+		"rating": "2",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 43-47 "
+		},
+		{
+		"name": "Sunnikuse•••",
+		"rating": "3",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 43-47 "
+		},
+		{
+		"name": "Sunnikuse••••",
+		"rating": "4",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 43-47 "
+		},
+		{
+		"name": "Sunnikuse•••••",
+		"rating": "5",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 43-47 "
+		},
+		{
+		"name": "Taurobolium•",
+		"rating": "1",
+		"book": "Bloodlines: The Legendary (VtR), pp. 60-63 "
+		},
+		{
+		"name": "Taurobolium••",
+		"rating": "2",
+		"book": "Bloodlines: The Legendary (VtR), pp. 60-63 "
+		},
+		{
+		"name": "Taurobolium•••",
+		"rating": "3",
+		"book": "Bloodlines: The Legendary (VtR), pp. 60-63 "
+		},
+		{
+		"name": "Taurobolium••••",
+		"rating": "4",
+		"book": "Bloodlines: The Legendary (VtR), pp. 60-63 "
+		},
+		{
+		"name": "Taurobolium•••••",
+		"rating": "5",
+		"book": "Bloodlines: The Legendary (VtR), pp. 60-63 "
+		},
+		{
+		"name": "Tenure•",
+		"rating": "1",
+		"book": "VTR: Invictus (book), p. 202 -206 "
+		},
+		{
+		"name": "Tenure••",
+		"rating": "2",
+		"book": "VTR: Invictus (book), p. 202 -206 "
+		},
+		{
+		"name": "Tenure•••",
+		"rating": "3",
+		"book": "VTR: Invictus (book), p. 202 -206 "
+		},
+		{
+		"name": "Tenure••••",
+		"rating": "4",
+		"book": "VTR: Invictus (book), p. 202 -206 "
+		},
+		{
+		"name": "Tenure•••••",
+		"rating": "5",
+		"book": "VTR: Invictus (book), p. 202 -206 "
+		},
+		{
+		"name": "Tezcatl•",
+		"rating": "1",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 85-87 "
+		},
+		{
+		"name": "Tezcatl••",
+		"rating": "2",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 85-87 "
+		},
+		{
+		"name": "Tezcatl•••",
+		"rating": "3",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 85-87 "
+		},
+		{
+		"name": "Tezcatl••••",
+		"rating": "4",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 85-87 "
+		},
+		{
+		"name": "Tezcatl•••••",
+		"rating": "5",
+		"book": "Bloodlines: The Hidden (VtR): page(s) 85-87 "
+		},
+		{
+		"name": "The Show•",
+		"rating": "1",
+		"book": "VTR: Bloodlines: The Legendary, pp. 34-37 "
+		},
+		{
+		"name": "The Show••",
+		"rating": "2",
+		"book": "VTR: Bloodlines: The Legendary, pp. 34-37 "
+		},
+		{
+		"name": "The Show•••",
+		"rating": "3",
+		"book": "VTR: Bloodlines: The Legendary, pp. 34-37 "
+		},
+		{
+		"name": "The Show••••",
+		"rating": "4",
+		"book": "VTR: Bloodlines: The Legendary, pp. 34-37 "
+		},
+		{
+		"name": "The Show•••••",
+		"rating": "5",
+		"book": "VTR: Bloodlines: The Legendary, pp. 34-37 "
+		},
+		{
+		"name": "Web•",
+		"rating": "1",
+		"book": "VTR: Invictus (book), p. 207 -212 "
+		},
+		{
+		"name": "Web••",
+		"rating": "2",
+		"book": "VTR: Invictus (book), p. 207 -212 "
+		},
+		{
+		"name": "Web•••",
+		"rating": "3",
+		"book": "VTR: Invictus (book), p. 207 -212 "
+		},
+		{
+		"name": "Web••••",
+		"rating": "4",
+		"book": "VTR: Invictus (book), p. 207 -212 "
+		},
+		{
+		"name": "Web•••••",
+		"rating": "5",
+		"book": "VTR: Invictus (book), p. 207 -212 "
+		},
+		{
+		"name": "Xinyao•",
+		"rating": "1",
+		"book": "VTR: Bloodlines: The Chosen, pp. 101-104 "
+		},
+		{
+		"name": "Xinyao••",
+		"rating": "2",
+		"book": "VTR: Bloodlines: The Chosen, pp. 101-104 "
+		},
+		{
+		"name": "Xinyao•••",
+		"rating": "3",
+		"book": "VTR: Bloodlines: The Chosen, pp. 101-104 "
+		},
+		{
+		"name": "Xinyao••••",
+		"rating": "4",
+		"book": "VTR: Bloodlines: The Chosen, pp. 101-104 "
+		},
+		{
+		"name": "Xinyao•••••",
+		"rating": "5",
+		"book": "VTR: Bloodlines: The Chosen, pp. 101-104 "
+		},
+		{
+		"name": "Zagovny•",
+		"rating": "1",
+		"book": "Vampire: The Requiem: Ordo Dracul: pp. 195-198 "
+		},
+		{
+		"name": "Zagovny••",
+		"rating": "2",
+		"book": "Vampire: The Requiem: Ordo Dracul: pp. 195-198 "
+		},
+		{
+		"name": "Zagovny•••",
+		"rating": "3",
+		"book": "Vampire: The Requiem: Ordo Dracul: pp. 195-198 "
+		},
+		{
+		"name": "Zagovny••••",
+		"rating": "4",
+		"book": "Vampire: The Requiem: Ordo Dracul: pp. 195-198 "
+		},
+		{
+		"name": "Zagovny•••••",
+		"rating": "5",
+		"book": "Vampire: The Requiem: Ordo Dracul: pp. 195-198 "
+		},
+		{
+		"name": "Ars Speculorum•",
+		"rating": "1",
+		"book": "Mythologies (VtR): page(s) 102-104 "
+		},
+		{
+		"name": "Ars Speculorum••",
+		"rating": "2",
+		"book": "Mythologies (VtR): page(s) 102-104 "
+		},
+		{
+		"name": "Ars Speculorum•••",
+		"rating": "3",
+		"book": "Mythologies (VtR): page(s) 102-104 "
+		},
+		{
+		"name": "Ars Speculorum••••",
+		"rating": "4",
+		"book": "Mythologies (VtR): page(s) 102-104 "
+		},
+		{
+		"name": "Ars Speculorum•••••",
+		"rating": "5",
+		"book": "Mythologies (VtR): page(s) 102-104 "
+		},
+		{
+			"name": "Blood Tenebrous•",
+			"rating": "1",
+			"book": "Book of Spirits (WoD): page(s) 124-126"
+		},
+		{
+			"name": "Blood Tenebrous••",
+			"rating": "2",
+			"book": "Book of Spirits (WoD): page(s) 124-126"
+		},
+		{
+			"name": "Blood Tenebrous•••",
+			"rating": "3",
+			"book": "Book of Spirits (WoD): page(s) 124-126"
+		},
+		{
+			"name": "Blood Tenebrous••••",
+			"rating": "4",
+			"book": "Book of Spirits (WoD): page(s) 124-126"
+		},
+		{
+			"name": "Blood Tenebrous•••••",
+			"rating": "5",
+			"book": "Book of Spirits (WoD): page(s) 124-126"
+		},
+		{
+			"name": "Breath-Drinking•",
+			"rating": "1",
+			"book": "VTR: Mythologies, p. 63 -68 "
+		},
+		{
+			"name": "Breath-Drinking••",
+			"rating": "2",
+			"book": "VTR: Mythologies, p. 63 -68 "
+		},
+		{
+			"name": "Breath-Drinking•••",
+			"rating": "3",
+			"book": "VTR: Mythologies, p. 63 -68 "
+		},
+		{
+			"name": "Breath-Drinking••••",
+			"rating": "4",
+			"book": "VTR: Mythologies, p. 63 -68 "
+		},
+		{
+			"name": "Breath-Drinking•••••",
+			"rating": "5",
+			"book": "VTR: Mythologies, p. 63 -68 "
+		},
+		{
+			"name": "Continence•",
+			"rating": "1",
+			"book": "Night Horrors: The Wicked Dead (VtR): p49 "
+		},
+		{
+			"name": "Continence••",
+			"rating": "2",
+			"book": "Night Horrors: The Wicked Dead (VtR): p49 "
+		},
+		{
+			"name": "Continence•••",
+			"rating": "3",
+			"book": "Night Horrors: The Wicked Dead (VtR): p49 "
+		},
+		{
+			"name": "Continence••••",
+			"rating": "4",
+			"book": "Night Horrors: The Wicked Dead (VtR): p49 "
+		},
+		{
+			"name": "Continence•••••",
+			"rating": "5",
+			"book": "Night Horrors: The Wicked Dead (VtR): p49 "
+		},
+		{
+			"name": "Dementation•",
+			"rating": "1",
+			"book": "Ventrue: Lords Over the Damned (VtR): page(s) 116-121 "
+		},
+		{
+			"name": "Dementation••",
+			"rating": "2",
+			"book": "Ventrue: Lords Over the Damned (VtR): page(s) 116-121 "
+		},
+		{
+			"name": "Dementation•••",
+			"rating": "3",
+			"book": "Ventrue: Lords Over the Damned (VtR): page(s) 116-121 "
+		},
+		{
+			"name": "Dementation••••",
+			"rating": "4",
+			"book": "Ventrue: Lords Over the Damned (VtR): page(s) 116-121 "
+		},
+		{
+			"name": "Dementation•••••",
+			"rating": "5",
+			"book": "Ventrue: Lords Over the Damned (VtR): page(s) 116-121 "
+		},
+		{
+			"name": "Detournement•",
+			"rating": "1",
+			"book": "Shadows in the Dark: Mekhet (VtR): page(s) 101-104 "
+		},
+		{
+			"name": "Detournement••",
+			"rating": "2",
+			"book": "Shadows in the Dark: Mekhet (VtR): page(s) 101-104 "
+		},
+		{
+			"name": "Detournement•••",
+			"rating": "3",
+			"book": "Shadows in the Dark: Mekhet (VtR): page(s) 101-104 "
+		},
+		{
+			"name": "Detournement••••",
+			"rating": "4",
+			"book": "Shadows in the Dark: Mekhet (VtR): page(s) 101-104 "
+		},
+		{
+			"name": "Detournement•••••",
+			"rating": "5",
+			"book": "Shadows in the Dark: Mekhet (VtR): page(s) 101-104 "
+		},
+		{
+			"name": "Hamartiaphage•",
+			"rating": "1",
+			"book": "Mythologies (VtR): page(s) 56-60 "
+		},
+		{
+			"name": "Hamartiaphage••",
+			"rating": "2",
+			"book": "Mythologies (VtR): page(s) 56-60 "
+		},
+		{
+			"name": "Hamartiaphage•••",
+			"rating": "3",
+			"book": "Mythologies (VtR): page(s) 56-60 "
+		},
+		{
+			"name": "Hamartiaphage••••",
+			"rating": "4",
+			"book": "Mythologies (VtR): page(s) 56-60 "
+		},
+		{
+			"name": "Hamartiaphage•••••",
+			"rating": "5",
+			"book": "Mythologies (VtR): page(s) 56-60 "
+		},
+		{
+			"name": "Mengilai•",
+			"rating": "1",
+			"book": "Night Horrors: The Wicked Dead (VtR): page(s) 70-71 "
+		},
+		{
+			"name": "Mengilai••",
+			"rating": "2",
+			"book": "Night Horrors: The Wicked Dead (VtR): page(s) 70-71 "
+		},
+		{
+			"name": "Mengilai•••",
+			"rating": "3",
+			"book": "Night Horrors: The Wicked Dead (VtR): page(s) 70-71 "
+		},
+		{
+			"name": "Mengilai••••",
+			"rating": "4",
+			"book": "Night Horrors: The Wicked Dead (VtR): page(s) 70-71 "
+		},
+		{
+			"name": "Mengilai•••••",
+			"rating": "5",
+			"book": "Night Horrors: The Wicked Dead (VtR): page(s) 70-71 "
+		},
+		{
+			"name": "Mérges Sorcery•",
+			"rating": "1",
+			"book": "Ancient Bloodlines (VtR): page(s) 147-152 "
+		},
+		{
+			"name": "Mérges Sorcery••",
+			"rating": "2",
+			"book": "Ancient Bloodlines (VtR): page(s) 147-152 "
+		},
+		{
+			"name": "Mérges Sorcery•••",
+			"rating": "3",
+			"book": "Ancient Bloodlines (VtR): page(s) 147-152 "
+		},
+		{
+			"name": "Mérges Sorcery••••",
+			"rating": "4",
+			"book": "Ancient Bloodlines (VtR): page(s) 147-152 "
+		},
+		{
+			"name": "Mérges Sorcery•••••",
+			"rating": "5",
+			"book": "Ancient Bloodlines (VtR): page(s) 147-152 "
+		},
+		{
+			"name": "Psychogenics•",
+			"rating": "1",
+			"book": "VTR: VII, pp. 151-154 "
+		},
+		{
+			"name": "Psychogenics••",
+			"rating": "2",
+			"book": "VTR: VII, pp. 151-154 "
+		},
+		{
+			"name": "Psychogenics•••",
+			"rating": "3",
+			"book": "VTR: VII, pp. 151-154 "
+		},
+		{
+			"name": "Psychogenics••••",
+			"rating": "4",
+			"book": "VTR: VII, pp. 151-154 "
+		},
+		{
+			"name": "Psychogenics•••••",
+			"rating": "5",
+			"book": "VTR: VII, pp. 151-154 "
+		},
+		{
+			"name": "Spoiling•",
+			"rating": "1",
+			"book": "VTR: Danse Macabre, pp. 102-104 "
+		},
+		{
+			"name": "Spoiling••",
+			"rating": "2",
+			"book": "VTR: Danse Macabre, pp. 102-104 "
+		},
+		{
+			"name": "Spoiling•••",
+			"rating": "3",
+			"book": "VTR: Danse Macabre, pp. 102-104 "
+		},
+		{
+			"name": "Spoiling••••",
+			"rating": "4",
+			"book": "VTR: Danse Macabre, pp. 102-104 "
+		},
+		{
+			"name": "Spoiling•••••",
+			"rating": "5",
+			"book": "VTR: Danse Macabre, pp. 102-104 "
+		},
+		{
+			"name": "Vodoun•",
+			"rating": "1",
+			"book": "Ancient Bloodlines (VtR): page(s) 73-80 "
+		},
+		{
+			"name": "Vodoun••",
+			"rating": "2",
+			"book": "Ancient Bloodlines (VtR): page(s) 73-80 "
+		},
+		{
+			"name": "Vodoun•••",
+			"rating": "3",
+			"book": "Ancient Bloodlines (VtR): page(s) 73-80 "
+		},
+		{
+			"name": "Vodoun••••",
+			"rating": "4",
+			"book": "Ancient Bloodlines (VtR): page(s) 73-80 "
+		},
+		{
+			"name": "Vodoun•••••",
+			"rating": "5",
+			"book": "Ancient Bloodlines (VtR): page(s) 73-80 "
+		}
+      ];
+var devotions = [
+		{
+		"name": "Arcane Sight ",
+		"book": "Vampire: The Requiem",
+		"prerequisite": "Auspex 2 Cruac 1"
+		},
+		{
+		"name": "Body of Will ",
+		"book": "Vampire: The Requiem",
+		"prerequisite": "Resilience 3, Vigor 1"
+		},
+		{
+		"name": "Instantaneous Transformation ",
+		"book": "Vampire: The Requiem",
+		"prerequisite": "Celerity 2, Protean 4"
+		},
+		{
+		"name": "Iron Façade ",
+		"book": "Vampire: The Requiem",
+		"prerequisite": "Obfuscate 2, Resiliience 2"
+		},
+		{
+		"name": "Knowing the Stranger ",
+		"book": "Vampire: The Requiem",
+		"prerequisite": "Auspex 4, Obfuscate 4"
+		},
+		{
+		"name": "Lessons in the Steel ",
+		"book": "Vampire: The Requiem",
+		"prerequisite": "Auspex 1, Resilience 3"
+		},
+		{
+		"name": "Partial Transformation ",
+		"book": "Vampire: The Requiem",
+		"prerequisite": "Protean 4, Resilience 1"
+		},
+		{
+		"name": "Quicken Sight ",
+		"book": "Vampire: The Requiem",
+		"prerequisite": "Auspex 1, Celerity 1"
+		},
+		{
+		"name": "Touch of Deprivation ",
+		"book": "Vampire: The Requiem",
+		"prerequisite": "Auspex 4, Dominate 2"
+		},
+		{
+		"name": "Veridical Tongue ",
+		"book": "Vampire: The Requiem",
+		"prerequisite": "Dominate 2, Majesty 2"
+		},
+		{
+		"name": "Exegesis ",
+		"book": "Bloodlines: The Chosen",
+		"prerequisite": "Auspex 4, Dominate 2"
+		},
+		{
+		"name": "Syncope ",
+		"book": "Bloodlines: The Chosen",
+		"prerequisite": "Auspex 4, Dominate 2"
+		},
+		{
+		"name": "Palinode",
+		"book": "Bloodlines: The Chosen",
+		"prerequisite": "Auspex 4, Dominate 3"
+		},
+		{
+		"name": "Dodona",
+		"book": "Bloodlines: The Chosen",
+		"prerequisite": "Auspex 3, Dominate 4"
+		},
+		{
+		"name": "Soma ",
+		"book": "Bloodlines: The Chosen",
+		"prerequisite": "Auspex 3, Celerity 1, Dominate 4"
+		},
+		{
+		"name": "Song of Serenity ",
+		"book": "Bloodlines: The Chosen",
+		"prerequisite": "Majesty 3, Mimetismo 2"
+		},
+		{
+		"name": "Appalling Lure ",
+		"book": "Bloodlines: The Chosen",
+		"prerequisite": "Majesty 4, Phagia 3"
+		},
+		{
+		"name": "The Warding Flesh ",
+		"book": "Bloodlines: The Chosen",
+		"prerequisite": "Nightmare 2, Phagia 4"
+		},
+		{
+		"name": "Rime of Salt ",
+		"book": "Bloodlines: The Chosen",
+		"prerequisite": "Protean 3, Resilience 1"
+		},
+		{
+		"name": "Undiminished Rage ",
+		"book": "Bloodlines: The Chosen",
+		"prerequisite": "Animalism 4, Protean 1"
+		},
+		{
+		"name": "The Hidden Master ",
+		"book": "Bloodlines: The Chosen",
+		"prerequisite": "Dominate 4, Protean 2"
+		},
+		{
+		"name": "Beloved Pet ",
+		"book": "Bloodlines: The Hidden",
+		"prerequisite": "Animalism 4, Protean 4"
+		},
+		{
+		"name": "Churchtower Gaze",
+		"book": "Bloodlines: The Hidden",
+		"prerequisite": "Nightmare 2, Majesty 2"
+		},
+		{
+		"name": "Indomitable Aura ",
+		"book": "Bloodlines: The Hidden",
+		"prerequisite": "Dominate 3, Resilience 2"
+		},
+		{
+		"name": "Man to Beast ",
+		"book": "Bloodlines: The Hidden",
+		"prerequisite": "Protean 4, Dominate 2, Animalism 1"
+		},
+		{
+		"name": "Quicken the Slumbering Vitae ",
+		"book": "Bloodlines: The Hidden",
+		"prerequisite": "Celerity 2, Vigor 2"
+		},
+		{
+		"name": "Shadow Heart ",
+		"book": "Bloodlines: The Hidden",
+		"prerequisite": "Nightmare 2, Vigor 3"
+		},
+		{
+		"name": "Sleepwalker ",
+		"book": "Bloodlines: The Hidden",
+		"prerequisite": "Dominate 2, Insomnium 3"
+		},
+		{
+		"name": "Tears of Blood ",
+		"book": "Bloodlines: The Hidden",
+		"prerequisite": "Majesty 2, Stigmatica 2"
+		},
+		{
+		"name": "Transubstantiation of the Starved ",
+		"book": "Bloodlines: The Hidden",
+		"prerequisite": "Protean 2, Stigmatica 3"
+		},
+		{
+		"name": "Witch Lights ",
+		"book": "Bloodlines: The Hidden",
+		"prerequisite": "Majesty 1, Nightmare 2"
+		},
+		{
+		"name": "Abdo Cordis ",
+		"book": "Ordo Dracul",
+		"prerequisite": "Auspex 3, Mortualia 3"
+		},
+		{
+		"name": "Compel Spirit ",
+		"book": "Ordo Dracul",
+		"prerequisite": "Dominate 2, Essentiaphagia 2"
+		},
+		{
+		"name": "Eyes of the Dragon ",
+		"book": "Ordo Dracul",
+		"prerequisite": "Auspex 2, Any tier of any Coil"
+		},
+		{
+		"name": "Free Your Blood ",
+		"book": "Ordo Dracul",
+		"prerequisite": "Blood of Beasts, Vigor 3"
+		},
+		{
+		"name": "Masked Blood ",
+		"book": "Ordo Dracul",
+		"prerequisite": "Obfuscate 2, Blood Seeps Slowly"
+		},
+		{
+		"name": "Sample the Earth ",
+		"book": "Ordo Dracul",
+		"prerequisite": "Auspex 2, Protean 2"
+		},
+		{
+		"name": "Strength From Pain ",
+		"book": "Ordo Dracul",
+		"prerequisite": "Resilience 3, Vigor 3"
+		},
+		{
+		"name": "Will to Endure ",
+		"book": "Ordo Dracul",
+		"prerequisite": "Resilience 2, Vigor 2"
+		},
+		{
+		"name": "Undying Familiar ",
+		"book": "Gangrel: Savage and Macabre",
+		"prerequisite": "Animalism ••••, Protean ••"
+		},
+		{
+		"name": "Unnatural Contortion ",
+		"book": "Gangrel: Savage and Macabre",
+		"prerequisite": "Protean ••••, Resilience •"
+		},
+		{
+		"name": "Prey's Blood ",
+		"book": "Gangrel: Savage and Macabre",
+		"prerequisite": "Level 2 Crúac Ritual"
+		},
+		{
+		"name": "Tickblood ",
+		"book": "Gangrel: Savage and Macabre",
+		"prerequisite": "Level 3 Crúac Ritual"
+		},
+		{
+		"name": "Picture Perfect ",
+		"book": "Daeva: Kiss of the Succubus",
+		"prerequisite": "Obfuscate ••••, Majesty •"
+		},
+		{
+		"name": "Night Life ",
+		"book": "Daeva: Kiss of the Succubus",
+		"prerequisite": "Vigor •, Majesty •"
+		},
+		{
+		"name": "Messenger's Blessing ",
+		"book": "Ventrue: Lords Over the Damned",
+		"prerequisite": "Dominate •••, Resilience •"
+		},
+		{
+		"name": "The Message ",
+		"book": "Ventrue: Lords Over the Damned",
+		"prerequisite": "Dominate ••, Auspex ••"
+		},
+		{
+		"name": "Hounds of Blood ",
+		"book": "Ventrue: Lords Over the Damned",
+		"prerequisite": "Animalism •••, Resilience •"
+		},
+		{
+		"name": "Wicked Grasp ",
+		"book": "Nosferatu: The Beast That Haunts the Blood",
+		"prerequisite": "Nightmare ••, Vigor •"
+		},
+		{
+		"name": "The Loathsome Foe ",
+		"book": "Nosferatu: The Beast That Haunts the Blood",
+		"prerequisite": "Nightmare •••, Obfuscate ••••"
+		},
+		{
+		"name": "This Awful Grip ",
+		"book": "Nosferatu: The Beast That Haunts the Blood",
+		"prerequisite": "Nightmare •, Vigor ••"
+		}
+];
